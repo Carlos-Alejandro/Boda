@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Allura&family=Cinzel:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+:root {
+	--color-page: #fcfbf8;
+	--color-card: #eef1e8;
+	--color-cream: #f8f3ea;
+	--color-gold: #a98445;
+	--color-text: #5f5947;
+	--color-olive: #7c8b68;
+
+	font-family: Georgia, 'Times New Roman', serif;
+	color: var(--color-text);
+	background: var(--color-page);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+	width: 100%;
+	min-height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	min-width: 0;
+	background: var(--color-page);
+	overflow-x: hidden;
+}
+
+button,
+input,
+textarea,
+select {
+	font: inherit;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	overscroll-behavior-y: none;
+}
