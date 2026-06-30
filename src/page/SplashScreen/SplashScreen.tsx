@@ -7,8 +7,23 @@ import lettersImage from '../../assets/splash/letters.png';
 import namesImage from '../../assets/splash/names.png';
 import florUpImage from '../../assets/splash/flor-up.png';
 import florDownImage from '../../assets/splash/flor-down.png';
+import heroImage from '../../assets/hero/hero-main2.jpeg';
 
 import './SplashScreen.css';
+
+function preloadImages(images: string[]) {
+	return Promise.all(
+		images.map((src) => {
+			return new Promise<void>((resolve) => {
+				const img = new Image();
+
+				img.onload = () => resolve();
+				img.onerror = () => resolve();
+				img.src = src;
+			});
+		})
+	);
+}
 
 export function SplashScreen() {
 	const navigate = useNavigate();
@@ -16,18 +31,27 @@ export function SplashScreen() {
 	const [canAnimate, setCanAnimate] = useState(false);
 
 	useEffect(() => {
-		let frame1 = 0;
-		let frame2 = 0;
+		let isMounted = true;
 
-		frame1 = window.requestAnimationFrame(() => {
-			frame2 = window.requestAnimationFrame(() => {
-				setCanAnimate(true);
-			});
-		});
+		const loadAssets = async () => {
+			await preloadImages([
+				frameImage,
+				lettersImage,
+				namesImage,
+				florUpImage,
+				florDownImage,
+				heroImage,
+			]);
+
+			if (!isMounted) return;
+
+			setCanAnimate(true);
+		};
+
+		loadAssets();
 
 		return () => {
-			window.cancelAnimationFrame(frame1);
-			window.cancelAnimationFrame(frame2);
+			isMounted = false;
 		};
 	}, []);
 
