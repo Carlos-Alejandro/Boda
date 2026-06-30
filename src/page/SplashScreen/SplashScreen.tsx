@@ -55,22 +55,15 @@ export function SplashScreen() {
 		};
 	}, []);
 
-	useEffect(() => {
-		if (!canAnimate) return;
+	const handleStart = () => {
+		if (isLeaving || !canAnimate) return;
 
-		const leaveTimer = window.setTimeout(() => {
-			setIsLeaving(true);
-		}, 6200);
+		setIsLeaving(true);
 
-		const navigateTimer = window.setTimeout(() => {
+		window.setTimeout(() => {
 			navigate('/inicio', { replace: true });
-		}, 7200);
-
-		return () => {
-			window.clearTimeout(leaveTimer);
-			window.clearTimeout(navigateTimer);
-		};
-	}, [canAnimate, navigate]);
+		}, 900);
+	};
 
 	return (
 		<section className="splash-screen">
@@ -231,21 +224,25 @@ export function SplashScreen() {
 							ease: [0.22, 1, 0.36, 1],
 						}}
 					>
-						<motion.p
-							initial={{ letterSpacing: '0.62em', opacity: 0 }}
+						<motion.button
+							type="button"
+							disabled={isLeaving || !canAnimate}
+							className="rounded-full border border-[#A98445]/55 bg-white/30 px-4 py-2 font-['Cinzel'] text-[0.68rem] font-medium uppercase tracking-[0.32em] text-[#A98445] shadow-[0_14px_34px_rgba(111,90,58,0.08)] backdrop-blur-sm disabled:pointer-events-none disabled:opacity-70"
+							initial={{ letterSpacing: '0.48em', opacity: 0, y: 8 }}
 							animate={
 								canAnimate
-									? { letterSpacing: '0.44em', opacity: 1 }
-									: { letterSpacing: '0.62em', opacity: 0 }
+									? { letterSpacing: '0.32em', opacity: 1, y: 0 }
+									: { letterSpacing: '0.48em', opacity: 0, y: 8 }
 							}
 							transition={{
 								delay: 3.25,
 								duration: 1.25,
 								ease: 'easeOut',
 							}}
+							onClick={handleStart}
 						>
-							Nuestra boda
-						</motion.p>
+							Comenzar
+						</motion.button>
 					</motion.div>
 				</motion.div>
 			</motion.div>

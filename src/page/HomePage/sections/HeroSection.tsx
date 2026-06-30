@@ -6,13 +6,15 @@ import heroImage from '../../../assets/hero/hero-main2.jpeg';
 import swipeUpAnimation from '../../../assets/animations/swipe-up.json';
 import ornamentAnimation from '../../../assets/animations/Ornament.json';
 
+const heroDelay = 1.3;
+
 export function HeroSection() {
 	const ornamentRef = useRef<Player>(null);
 
 	useEffect(() => {
 		const ornamentTimer = window.setTimeout(() => {
 			ornamentRef.current?.play();
-		}, 3200);
+		}, (heroDelay + 3.2) * 1000);
 
 		return () => {
 			window.clearTimeout(ornamentTimer);
@@ -35,7 +37,7 @@ export function HeroSection() {
 					className="pt-[5svh]"
 					initial={{ opacity: 0, y: 14 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: 0.45, duration: 1, ease: 'easeOut' }}
+					transition={{ delay: heroDelay + 0.45, duration: 1, ease: 'easeOut' }}
 				>
 					<svg viewBox="0 0 300 90" className="h-20 w-72 overflow-visible">
 						<path
@@ -56,18 +58,33 @@ export function HeroSection() {
 					className="mt-2"
 					initial={{ opacity: 0, y: 22 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: 0.9, duration: 1.1, ease: 'easeOut' }}
+					transition={{ delay: heroDelay + 0.9, duration: 1.1, ease: 'easeOut' }}
 				>
 					<h1 className="font-['Allura'] text-[5.8rem] font-normal leading-[0.78] tracking-normal drop-shadow-[0_10px_24px_rgba(0,0,0,0.35)]">
-						<motion.span className="block" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 1, ease: 'easeOut' }}>
+						<motion.span
+							className="block"
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: heroDelay + 1, duration: 1, ease: 'easeOut' }}
+						>
 							América
 						</motion.span>
 
-						<motion.span className="block py-2 font-['Allura'] text-[4rem] text-[#D8B46A]" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.35, duration: 0.8, ease: 'easeOut' }}>
+						<motion.span
+							className="block py-2 font-['Allura'] text-[4rem] text-[#D8B46A]"
+							initial={{ opacity: 0, scale: 0.85 }}
+							animate={{ opacity: 1, scale: 1 }}
+							transition={{ delay: heroDelay + 1.35, duration: 0.8, ease: 'easeOut' }}
+						>
 							&
 						</motion.span>
 
-						<motion.span className="block" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.7, duration: 1, ease: 'easeOut' }}>
+						<motion.span
+							className="block"
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: heroDelay + 1.7, duration: 1, ease: 'easeOut' }}
+						>
 							Carlos
 						</motion.span>
 					</h1>
@@ -79,7 +96,7 @@ export function HeroSection() {
 					className="mb-[18svh] flex flex-col items-center"
 					initial={{ opacity: 0, y: 18 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: 2.35, duration: 0.9, ease: 'easeOut' }}
+					transition={{ delay: heroDelay + 2.35, duration: 0.9, ease: 'easeOut' }}
 				>
 					<Player
 						ref={ornamentRef}
@@ -99,7 +116,7 @@ export function HeroSection() {
 					className="absolute bottom-14 flex flex-col items-center"
 					initial={{ opacity: 0, y: 14 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: 5.6, duration: 1, ease: 'easeOut' }}
+					transition={{ delay: heroDelay + 5.6, duration: 1, ease: 'easeOut' }}
 				>
 					<Player
 						autoplay
