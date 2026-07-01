@@ -6,7 +6,7 @@ import heroImage from '../../../assets/hero/hero-main2.jpeg';
 import swipeUpAnimation from '../../../assets/animations/swipe-up.json';
 import ornamentAnimation from '../../../assets/animations/Ornament.json';
 
-const heroDelay = 1.3;
+const heroDelay = 0.8;
 
 export function HeroSection() {
 	const ornamentRef = useRef<Player>(null);

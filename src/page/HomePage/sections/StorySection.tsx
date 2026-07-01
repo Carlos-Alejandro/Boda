@@ -6,7 +6,7 @@ import florInicioDown from '../../../assets/story/flor-inicio-down.png';
 
 export function StorySection() {
 	return (
-		<section className="relative flex min-h-svh items-center justify-center overflow-hidden bg-[#FAF8F3] px-7 text-center text-[#5F5947]">
+		<section className="relative flex min-h-svh flex-col items-center overflow-hidden bg-[#FAF8F3] px-7 pt-20 pb-10 text-center text-[#5F5947]">
 			<motion.img
 				src={florInicioUp}
 				alt=""
@@ -29,11 +29,11 @@ export function StorySection() {
 				transition={{ delay: 0.1, duration: 1.2, ease: 'easeOut' }}
 			/>
 
-			<div className="relative z-10 mx-auto flex w-full max-w-[320px] -translate-y-4 flex-col items-center justify-center">
+			<div className="relative z-10 mx-auto flex w-full max-w-[320px] flex-col items-center pt-20">
 				<motion.p
 					className="font-['Cinzel'] text-[0.64rem] font-medium uppercase leading-[2] tracking-[0.15em] text-[#6D6654]"
-					initial={{ opacity: 0, y: 18 }}
-					whileInView={{ opacity: 1, y: 0 }}
+					initial={{ opacity: 0 }}
+					whileInView={{ opacity: 1 }}
 					viewport={{ once: true }}
 					transition={{ duration: 0.85, ease: 'easeOut' }}
 				>
@@ -50,8 +50,8 @@ export function StorySection() {
 
 				<motion.h2
 					className="mt-12 font-['Allura'] text-[4.55rem] leading-[0.78] text-[#6F7563]"
-					initial={{ opacity: 0, y: 26 }}
-					whileInView={{ opacity: 1, y: 0 }}
+					initial={{ opacity: 0 }}
+					whileInView={{ opacity: 1 }}
 					viewport={{ once: true }}
 					transition={{ delay: 0.15, duration: 0.95, ease: 'easeOut' }}
 				>
@@ -66,12 +66,12 @@ export function StorySection() {
 
 				<motion.div
 					className="mt-12 flex w-full flex-col items-center"
-					initial={{ opacity: 0, y: 18 }}
-					whileInView={{ opacity: 1, y: 0 }}
+					initial={{ opacity: 0 }}
+					whileInView={{ opacity: 1 }}
 					viewport={{ once: true }}
 					transition={{ delay: 0.28, duration: 0.85, ease: 'easeOut' }}
 				>
-					<WeddingAudioPlayer startAtSeconds={1.5} />
+					<WeddingAudioPlayer startAtSeconds={0} />
 				</motion.div>
 			</div>
 		</section>

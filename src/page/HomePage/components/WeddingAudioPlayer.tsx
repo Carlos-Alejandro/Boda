@@ -8,7 +8,7 @@ import {
 	SkipForward,
 } from 'lucide-react';
 
-import weddingSong from '../../../assets/audio/wedding-song.mp3';
+import weddingSong from '../../../assets/audio/wedding-song2.mp3';
 
 interface WeddingAudioPlayerProps {
 	className?: string;
@@ -78,7 +78,7 @@ export function WeddingAudioPlayer({
 			/>
 
 			<p className="font-['Cormorant_Garamond'] text-[0.98rem] italic text-[#6D6654]">
-				Dale play a nuestra canción
+				Que suene el amor
 			</p>
 
 			<div className="mt-5 h-[2px] w-[230px] rounded-full bg-[#7C8B68]/35">
