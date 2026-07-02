@@ -1,14 +1,13 @@
-import { CeremonySection } from './sections/CeremonySection';
 import { CountdownSection } from './sections/CountdownSection';
 import { DressCodeSection } from './sections/DressCodeSection';
 import FooterSection from './sections/FooterSection';
 import {GallerySection} from './sections/GallerySection';
 import { GiftsSection } from './sections/GiftsSection';
 import { HeroSection } from './sections/HeroSection';
-import ReceptionSection from './sections/ReceptionSection';
 import { RSVPSection } from './sections/RSVPSection';
 import { StorySection } from './sections/StorySection';
 import TimelineSection from './sections/TimelineSection';
+import { LocationSection } from './sections/LocationSection';
 
 export function HomePage() {
 	return (
@@ -18,8 +17,7 @@ export function HomePage() {
 				<StorySection />
 				<CountdownSection />
 				<GallerySection />
-				<CeremonySection />
-				<ReceptionSection />
+				<LocationSection />
 				<TimelineSection />
 				<DressCodeSection />
 				<GiftsSection />
