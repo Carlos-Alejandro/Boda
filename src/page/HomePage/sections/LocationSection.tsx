@@ -5,8 +5,8 @@ import { MapPin } from 'lucide-react';
 
 import florInicioUp from '../../../assets/story/flor-inicio-up.png';
 import florInicioDown from '../../../assets/story/flor-inicio-down.png';
-import churchAnimation from '../../../assets/animations/church.json';
-import celebrationAnimation from '../../../assets/animations/celebration.json';
+import churchAnimation from '../../../assets/animations/Church.json';
+import celebrationAnimation from '../../../assets/animations/Celebration.json';
 
 export function LocationSection() {
 	const churchRef = useRef<Player>(null);
