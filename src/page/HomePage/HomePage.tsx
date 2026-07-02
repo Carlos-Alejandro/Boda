@@ -2,7 +2,7 @@ import { CeremonySection } from './sections/CeremonySection';
 import { CountdownSection } from './sections/CountdownSection';
 import { DressCodeSection } from './sections/DressCodeSection';
 import FooterSection from './sections/FooterSection';
-import GallerySection from './sections/GallerySection';
+import {GallerySection} from './sections/GallerySection';
 import { GiftsSection } from './sections/GiftsSection';
 import { HeroSection } from './sections/HeroSection';
 import ReceptionSection from './sections/ReceptionSection';
@@ -17,11 +17,11 @@ export function HomePage() {
 				<HeroSection />
 				<StorySection />
 				<CountdownSection />
+				<GallerySection />
 				<CeremonySection />
 				<ReceptionSection />
 				<TimelineSection />
 				<DressCodeSection />
-				<GallerySection />
 				<GiftsSection />
 				<RSVPSection />
 				<FooterSection />
