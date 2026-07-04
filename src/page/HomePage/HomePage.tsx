@@ -6,7 +6,7 @@ import { GiftsSection } from './sections/GiftsSection';
 import { HeroSection } from './sections/HeroSection';
 import { RSVPSection } from './sections/RSVPSection';
 import { StorySection } from './sections/StorySection';
-import TimelineSection from './sections/TimelineSection';
+import {TimelineSection} from './sections/TimelineSection';
 import { LocationSection } from './sections/LocationSection';
 
 export function HomePage() {

@@ -83,7 +83,7 @@ export function CountdownSection() {
 					initial={{ opacity: 0, y: 18 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
-					transition={{ delay: 0.08, duration: 0.85, ease: 'easeOut' }}
+					transition={{ delay: 0.22, duration: 1.25, ease: 'easeOut' }}
 				>
 					Con el amor que nos une,
 					<br />
@@ -101,7 +101,7 @@ export function CountdownSection() {
 					initial={{ opacity: 0, y: 22 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
-					transition={{ delay: 0.15, duration: 0.9, ease: 'easeOut' }}
+					transition={{ delay: 0.42, duration: 1.25, ease: 'easeOut' }}
 				>
 					<p className="text-[0.78rem] font-semibold uppercase tracking-[0.38em]">
 						Marzo
@@ -116,9 +116,15 @@ export function CountdownSection() {
 							<span className="h-px w-full bg-[#6F7563]/55" />
 						</div>
 
-						<p className="font-['Allura'] text-[5rem] leading-none text-[#6F7563]">
+						<motion.p
+							className="font-['Allura'] text-[5rem] leading-none text-[#6F7563]"
+							initial={{ opacity: 0, scale: 0.82 }}
+							whileInView={{ opacity: 1, scale: 1 }}
+							viewport={{ once: true }}
+							transition={{ delay: 0.72, duration: 1.3, ease: 'easeOut' }}
+						>
 							18
-						</p>
+						</motion.p>
 
 						<div className="flex flex-col gap-3">
 							<span className="h-px w-full bg-[#6F7563]/55" />
@@ -132,10 +138,10 @@ export function CountdownSection() {
 
 				<motion.div
 					className="mt-11"
-					initial={{ opacity: 0, y: 18 }}
+					initial={{ opacity: 0, y: 22 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
-					transition={{ delay: 0.28, duration: 0.85, ease: 'easeOut' }}
+					transition={{ delay: 0.62, duration: 1.25, ease: 'easeOut' }}
 				>
 					<p className="font-['Cinzel'] text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-[#6F7563]">
 						Faltan
@@ -148,7 +154,18 @@ export function CountdownSection() {
 							{ label: 'Min', value: timeLeft.minutes, width: 'w-11' },
 							{ label: 'Seg', value: timeLeft.seconds, width: 'w-11' },
 						].map((item, index) => (
-							<div key={item.label} className="flex items-start">
+							<motion.div
+								key={item.label}
+								className="flex items-start"
+								initial={{ opacity: 0, y: 12 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								viewport={{ once: true }}
+								transition={{
+									delay: 0.82 + index * 0.12,
+									duration: 0.9,
+									ease: 'easeOut',
+								}}
+							>
 								<div className={item.width}>
 									<p className="text-[1.75rem] leading-none">
 										{String(item.value).padStart(2, '0')}
@@ -164,7 +181,7 @@ export function CountdownSection() {
 										:
 									</span>
 								)}
-							</div>
+							</motion.div>
 						))}
 					</div>
 				</motion.div>
