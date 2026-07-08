@@ -4,6 +4,7 @@ import {
 	Camera,
 	Church,
 	GlassWater,
+	Heart,
 	PartyPopper,
 	Sparkles,
 	Utensils,
@@ -13,99 +14,45 @@ import florInicioUp from '../../../assets/story/flor-inicio-up.png';
 import florInicioDown from '../../../assets/story/flor-inicio-down.png';
 
 const timelineItems = [
-	{ time: '12:00 PM', label: 'Sesión de fotos', icon: Camera, side: 'left' },
-	{ time: '1:00 PM', label: 'Ceremonia religiosa', icon: Church, side: 'right' },
-	{ time: '3:00 PM', label: 'Recepción', icon: GlassWater, side: 'left' },
-	{ time: '4:00 PM', label: 'Comida', icon: Utensils, side: 'right' },
-	{ time: '5:00 PM', label: 'Brindis', icon: GlassWater, side: 'left' },
-	{ time: '6:00 PM', label: 'Primer baile', icon: PartyPopper, side: 'right' },
-	{ time: '7:00 PM', label: 'Pastel', icon: CakeSlice, side: 'left' },
-	{ time: '8:00 PM', label: 'Fiesta', icon: Sparkles, side: 'right' },
+	{ time: '4:00 PM', label: 'Ceremonia religiosa', icon: Church, side: 'left' },
+	{ time: '5:00 PM', label: 'Sesión de fotos de los novios', icon: Camera, side: 'right' },
+	{ time: '6:00 PM', label: 'Comienza la celebración', icon: Sparkles, side: 'left' },
+	{ time: '6:30 PM', label: 'Entrada de los novios', icon: Heart, side: 'right' },
+	{ time: '7:00 PM', label: 'Cena y banquete', icon: Utensils, side: 'left' },
+	{ time: '8:00 PM', label: 'Brindis', icon: GlassWater, side: 'right' },
+	{ time: '9:00 PM', label: 'Corte de pastel, ramo y liga', icon: CakeSlice, side: 'left' },
+	{ time: '10:00 PM', label: 'Baile y fiesta', icon: PartyPopper, side: 'right' },
+	{ time: '11:00 PM', label: 'Fin del evento', icon: Sparkles, side: 'left' },
 ] as const;
 
 export function TimelineSection() {
-	const leftItems = timelineItems.filter((item) => item.side === 'left');
-	const rightItems = timelineItems.filter((item) => item.side === 'right');
-
 	return (
-		<section className="relative flex min-h-svh items-center justify-center overflow-hidden bg-[#FAF8F3] px-6 p-12 text-center text-[#5F5947]">
+		<section className="relative flex min-h-svh items-center justify-center overflow-hidden bg-[#FAF8F3] px-6 py-10 text-center text-[#5F5947]">
 			<motion.img
 				src={florInicioUp}
 				alt=""
 				aria-hidden="true"
-				className="pointer-events-none absolute -left-1 top-0 w-64 select-none opacity-75"
+				className="pointer-events-none absolute -left-1 top-0 w-64 select-none opacity-85"
 				initial={{ opacity: 0, x: -14, y: -14, scale: 0.96 }}
-				whileInView={{ opacity: 0.75, x: 0, y: 0, scale: 1 }}
-				animate={{
-					y: [0, 6, 0],
-					rotate: [0, -1.5, 0],
-					scale: [1, 1.015, 1],
-				}}
+				whileInView={{ opacity: 0.85, x: 0, y: 0, scale: 1 }}
 				viewport={{ once: true }}
-				transition={{
-					opacity: { duration: 1.2, ease: 'easeOut' },
-					x: { duration: 1.2, ease: 'easeOut' },
-					y: {
-						duration: 5.4,
-						repeat: Infinity,
-						repeatType: 'mirror',
-						ease: 'easeInOut',
-					},
-					rotate: {
-						duration: 6.2,
-						repeat: Infinity,
-						repeatType: 'mirror',
-						ease: 'easeInOut',
-					},
-					scale: {
-						duration: 5.8,
-						repeat: Infinity,
-						repeatType: 'mirror',
-						ease: 'easeInOut',
-					},
-				}}
+				transition={{ duration: 1.2, ease: 'easeOut' }}
 			/>
 
 			<motion.img
 				src={florInicioDown}
 				alt=""
 				aria-hidden="true"
-				className="pointer-events-none absolute bottom-0 right-0 w-64 select-none opacity-75"
-				initial={{ opacity: 0, x: 18, y: 18, scale: 0.96 }}
-				whileInView={{ opacity: 0.75, x: 0, y: 0, scale: 1 }}
-				animate={{
-					y: [0, -6, 0],
-					rotate: [0, 1.5, 0],
-					scale: [1, 1.015, 1],
-				}}
+				className="pointer-events-none absolute -bottom-3 right-0 w-72 select-none opacity-85"
+				initial={{ opacity: 0, x: 14, y: 14, scale: 0.96 }}
+				whileInView={{ opacity: 0.85, x: 0, y: 0, scale: 1 }}
 				viewport={{ once: true }}
-				transition={{
-					opacity: { duration: 1.2, ease: 'easeOut' },
-					x: { duration: 1.2, ease: 'easeOut' },
-					y: {
-						duration: 5,
-						repeat: Infinity,
-						repeatType: 'mirror',
-						ease: 'easeInOut',
-					},
-					rotate: {
-						duration: 6,
-						repeat: Infinity,
-						repeatType: 'mirror',
-						ease: 'easeInOut',
-					},
-					scale: {
-						duration: 5.5,
-						repeat: Infinity,
-						repeatType: 'mirror',
-						ease: 'easeInOut',
-					},
-				}}
+				transition={{ delay: 0.1, duration: 1.2, ease: 'easeOut' }}
 			/>
 
 			<div className="relative z-10 mx-auto w-full max-w-[365px]">
 				<motion.h2
-					className="font-['Allura'] text-[2.6rem] leading-none text-[#A98445]"
+					className="font-['Allura'] text-[2.35rem] leading-none text-[#A98445]"
 					initial={{ opacity: 0, y: 16 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true, amount: 0.4 }}
@@ -114,7 +61,7 @@ export function TimelineSection() {
 					Itinerario de actividades
 				</motion.h2>
 
-				<div className="relative mx-auto mt-12 grid grid-cols-[1fr_32px_1fr] items-start">
+				<div className="relative mx-auto mt-8">
 					<motion.div
 						className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-[#9BA58C]"
 						initial={{ scaleY: 0, opacity: 0 }}
@@ -124,77 +71,69 @@ export function TimelineSection() {
 						style={{ transformOrigin: 'top' }}
 					/>
 
-					<div className="space-y-12 pt-16">
-						{leftItems.map(({ time, label, icon: Icon }, index) => (
-							<motion.div
-								key={`${time}-${label}`}
-								className="grid grid-cols-[1fr_46px] items-center gap-2"
-								initial={{ opacity: 0, x: -18 }}
-								whileInView={{ opacity: 1, x: 0 }}
-								viewport={{ once: true, amount: 0.45 }}
-								transition={{
-									delay: index * 0.12,
-									duration: 0.75,
-									ease: 'easeOut',
-								}}
-							>
-								<div className="text-right">
-									<p className="font-['Cinzel'] text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#6F7563]">
-										{time}
-									</p>
-									<p className="mt-1 font-['Cinzel'] text-[0.63rem] font-semibold uppercase leading-4 tracking-[0.15em]">
-										{label}
-									</p>
-								</div>
+					<div className="flex w-full flex-col gap-5">
+						{timelineItems.map(({ time, label, icon: Icon, side }, index) => {
+							const isLeft = side === 'left';
 
-								<Icon size={38} strokeWidth={1.35} className="text-[#7C8B68]" />
-							</motion.div>
-						))}
-					</div>
+							return (
+								<motion.div
+									key={`${time}-${label}`}
+									className="grid grid-cols-[1fr_32px_1fr] items-center"
+									initial={{ opacity: 0, x: isLeft ? -18 : 18 }}
+									whileInView={{ opacity: 1, x: 0 }}
+									viewport={{ once: true, amount: 0.45 }}
+									transition={{
+										delay: index * 0.08,
+										duration: 0.7,
+										ease: 'easeOut',
+									}}
+								>
+									<div className={isLeft ? 'flex items-center justify-end gap-2' : ''}>
+										{isLeft && (
+											<>
+												<p className="max-w-[112px] text-right font-['Cinzel'] text-[0.56rem] font-semibold uppercase leading-[0.9rem] tracking-[0.12em]">
+													<span className="mb-0.5 block text-[0.52rem] tracking-[0.15em] text-[#A98445]">
+														{time}
+													</span>
+													{label}
+												</p>
 
-					<div className="relative z-10 flex flex-col items-center gap-[72px] pt-7">
-						{Array.from({ length: 4 }).map((_, index) => (
-							<motion.span
-								key={index}
-								className="h-px w-8 bg-[#9BA58C]"
-								initial={{ scaleX: 0, opacity: 0 }}
-								whileInView={{ scaleX: 1, opacity: 1 }}
-								viewport={{ once: true, amount: 0.45 }}
-								transition={{
-									delay: 0.35 + index * 0.14,
-									duration: 0.55,
-									ease: 'easeOut',
-								}}
-							/>
-						))}
-					</div>
+												<Icon size={29} strokeWidth={1.35} className="shrink-0 text-[#7C8B68]" />
+											</>
+										)}
+									</div>
 
-					<div className="space-y-12">
-						{rightItems.map(({ time, label, icon: Icon }, index) => (
-							<motion.div
-								key={`${time}-${label}`}
-								className="grid grid-cols-[46px_1fr] items-center gap-2"
-								initial={{ opacity: 0, x: 18 }}
-								whileInView={{ opacity: 1, x: 0 }}
-								viewport={{ once: true, amount: 0.45 }}
-								transition={{
-									delay: index * 0.12,
-									duration: 0.75,
-									ease: 'easeOut',
-								}}
-							>
-								<Icon size={38} strokeWidth={1.35} className="text-[#7C8B68]" />
+									<div className="relative z-10 flex items-center justify-center">
+										<motion.span
+											className="h-px w-8 bg-[#9BA58C]"
+											initial={{ scaleX: 0, opacity: 0 }}
+											whileInView={{ scaleX: 1, opacity: 1 }}
+											viewport={{ once: true, amount: 0.45 }}
+											transition={{
+												delay: 0.25 + index * 0.08,
+												duration: 0.45,
+												ease: 'easeOut',
+											}}
+										/>
+									</div>
 
-								<div className="text-left">
-									<p className="font-['Cinzel'] text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#6F7563]">
-										{time}
-									</p>
-									<p className="mt-1 font-['Cinzel'] text-[0.63rem] font-semibold uppercase leading-4 tracking-[0.15em]">
-										{label}
-									</p>
-								</div>
-							</motion.div>
-						))}
+									<div className={!isLeft ? 'flex items-center justify-start gap-2' : ''}>
+										{!isLeft && (
+											<>
+												<Icon size={29} strokeWidth={1.35} className="shrink-0 text-[#7C8B68]" />
+
+												<p className="max-w-[112px] text-left font-['Cinzel'] text-[0.56rem] font-semibold uppercase leading-[0.9rem] tracking-[0.12em]">
+													<span className="mb-0.5 block text-[0.52rem] tracking-[0.15em] text-[#A98445]">
+														{time}
+													</span>
+													{label}
+												</p>
+											</>
+										)}
+									</div>
+								</motion.div>
+							);
+						})}
 					</div>
 				</div>
 			</div>
