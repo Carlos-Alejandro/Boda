@@ -52,7 +52,7 @@ export function TimelineSection() {
 
 			<div className="relative z-10 mx-auto w-full max-w-[365px]">
 				<motion.h2
-					className="font-['Allura'] text-[2.35rem] leading-none text-[#A98445]"
+					className="font-['Allura'] text-[2.55rem] leading-none text-[#A98445]"
 					initial={{ opacity: 0, y: 16 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true, amount: 0.4 }}
