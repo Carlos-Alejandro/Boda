@@ -2,7 +2,7 @@ import { CountdownSection } from './sections/CountdownSection';
 import { DressCodeSection } from './sections/DressCodeSection';
 import FooterSection from './sections/FooterSection';
 import {GallerySection} from './sections/GallerySection';
-import { GiftsSection } from './sections/GiftsSection';
+import { GiftSuggestionSection } from './sections/GiftSuggestionSection';
 import { HeroSection } from './sections/HeroSection';
 import { RSVPSection } from './sections/RSVPSection';
 import { StorySection } from './sections/StorySection';
@@ -20,7 +20,7 @@ export function HomePage() {
 				<LocationSection />
 				<TimelineSection />
 				<DressCodeSection />
-				<GiftsSection />
+				<GiftSuggestionSection />
 				<RSVPSection />
 				<FooterSection />
 			</div>

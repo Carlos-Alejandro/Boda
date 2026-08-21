@@ -175,7 +175,7 @@ export function LocationSection() {
 						};
 						return (
 							<motion.article key={location.name}
-								className="relative rounded-[2rem] border border-[#D9CEB9]/80 bg-[#FFFDF8]/95 px-6 pb-5 pt-3 shadow-[0_18px_50px_rgba(95,89,71,0.11)] backdrop-blur-sm"
+								className="relative rounded-[2rem] border border-[#D9CEB9]/80 bg-[#FFFDF8]/95 px-6 pb-5 pt-3 shadow-[0_18px_50px_rgba(95,89,71,0.03)] backdrop-blur-sm"
 								initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
 								viewport={{ once: true, amount: 0.4 }} transition={{ delay: index * 0.12, duration: 0.75 }}
 								onViewportEnter={() => {
