@@ -1,17 +1,17 @@
 import { motion } from 'motion/react';
 
-import { WeddingAudioPlayer } from '../components/WeddingAudioPlayer';
-import florInicioUp from '../../../assets/story/flor-inicio-up.png';
 import florInicioDown from '../../../assets/story/flor-inicio-down.png';
+import florInicioUp from '../../../assets/story/flor-inicio-up.png';
+import { WeddingAudioPlayer } from '../components/WeddingAudioPlayer';
 
 const slowReveal = {
-	hidden: { opacity: 0, y: 22, scale: 0.98 },
+	hidden: { opacity: 0, y: 20, scale: 0.98 },
 	visible: { opacity: 1, y: 0, scale: 1 },
 };
 
 export function StorySection() {
 	return (
-		<section className="relative flex min-h-svh flex-col items-center overflow-hidden bg-[#FAF8F3] px-7 pt-20 pb-10 text-center text-[#5F5947]">
+		<section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-[#FAF8F3] px-7 py-12 text-center text-[#5F5947]">
 			<motion.img
 				src={florInicioUp}
 				alt=""
@@ -35,75 +35,77 @@ export function StorySection() {
 			/>
 
 			<motion.div
-				className="relative z-10 mx-auto flex w-full max-w-[320px] flex-col items-center pt-20"
+				className="relative z-10 mx-auto flex w-full max-w-[320px] flex-col items-center"
 				initial="hidden"
 				whileInView="visible"
-				viewport={{ once: true, amount: 0.45 }}
+				viewport={{ once: true, amount: 0.35 }}
 			>
 				<motion.p
-					className="font-['Cinzel'] text-[0.64rem] font-medium uppercase leading-[2] tracking-[0.15em] text-[#6D6654]"
+					className="font-['Cinzel'] text-[0.6rem] font-semibold uppercase tracking-[0.28em] text-[#7C8B68]"
 					variants={slowReveal}
-					transition={{ duration: 1.35, ease: 'easeOut' }}
+					transition={{ duration: 0.9, ease: 'easeOut' }}
 				>
-					“Ya no son dos, sino uno solo.
-					<br />
-					Por tanto, lo que Dios ha unido,
-					<br />
-					que no lo separe el hombre.”
-					<br />
-					<motion.span
-						className="mt-2 block text-[0.58rem] tracking-[0.18em] text-[#8A806D]"
-						variants={slowReveal}
-						transition={{ delay: 0.35, duration: 1.1, ease: 'easeOut' }}
-					>
-						(Mateo 19:6)
-					</motion.span>
+					Dos almas, un camino
 				</motion.p>
 
-				<motion.h2
-					className="mt-12 font-['Allura'] text-[4.55rem] leading-[0.78] text-[#6F7563]"
-					initial="hidden"
-					whileInView="visible"
-					viewport={{ once: true, amount: 0.45 }}
+				<motion.div
+					className="relative mt-4 w-full border-y border-[#A98445]/20 px-5 py-5"
+					variants={slowReveal}
+					transition={{ delay: 0.15, duration: 1.1, ease: 'easeOut' }}
 				>
+					<span aria-hidden="true" className="absolute -top-4 left-2 font-['Allura'] text-[3.2rem] leading-none text-[#A98445]/45">“</span>
+					<span aria-hidden="true" className="absolute -bottom-8 right-2 font-['Allura'] text-[3.2rem] leading-none text-[#A98445]/45">”</span>
+					<p className="font-['Cinzel'] text-[0.63rem] font-medium uppercase leading-[1.9] tracking-[0.13em] text-[#6D6654]">
+						Ya no son dos, sino uno solo.
+						<br />
+						Por tanto, lo que Dios ha unido,
+						<br />
+						que no lo separe el hombre.
+					</p>
+					<p className="mt-2 font-['Cinzel'] text-[0.55rem] tracking-[0.18em] text-[#8A806D]">Mateo 19:6</p>
+				</motion.div>
+
+				<motion.h2 className="mt-8 font-['Allura'] text-[4.35rem] leading-[0.76] text-[#6F7563]">
 					<motion.span
 						className="block -translate-x-5"
-						variants={{
-							hidden: { opacity: 0, x: -26, y: 12, scale: 0.96 },
-							visible: { opacity: 1, x: 0, y: 0, scale: 1 },
-						}}
-						transition={{ delay: 0.45, duration: 1.35, ease: 'easeOut' }}
+						variants={{ hidden: { opacity: 0, x: -26, y: 10 }, visible: { opacity: 1, x: 0, y: 0 } }}
+						transition={{ delay: 0.45, duration: 1.2, ease: 'easeOut' }}
 					>
 						América
 					</motion.span>
 
 					<motion.span
-						className="block py-3 font-['Allura'] text-[2.7rem] leading-none text-[#A98445]"
-						variants={{
-							hidden: { opacity: 0, scale: 0.65, rotate: -8 },
-							visible: { opacity: 1, scale: 1, rotate: 0 },
-						}}
-						transition={{ delay: 0.85, duration: 1.1, ease: 'easeOut' }}
+						className="relative mx-auto block w-fit py-2 font-['Allura'] text-[2.5rem] leading-none text-[#A98445]"
+						variants={{ hidden: { opacity: 0, scale: 0.5, rotate: -10 }, visible: { opacity: 1, scale: 1, rotate: 0 } }}
+						transition={{ delay: 0.78, duration: 0.9, ease: 'easeOut' }}
+						animate={{ scale: [1, 1.1, 1] }}
 					>
 						&
 					</motion.span>
 
 					<motion.span
 						className="block translate-x-6"
-						variants={{
-							hidden: { opacity: 0, x: 26, y: 12, scale: 0.96 },
-							visible: { opacity: 1, x: 0, y: 0, scale: 1 },
-						}}
-						transition={{ delay: 1.15, duration: 1.35, ease: 'easeOut' }}
+						variants={{ hidden: { opacity: 0, x: 26, y: 10 }, visible: { opacity: 1, x: 0, y: 0 } }}
+						transition={{ delay: 1.02, duration: 1.2, ease: 'easeOut' }}
 					>
 						Carlos
 					</motion.span>
 				</motion.h2>
 
 				<motion.div
-					className="mt-12 flex w-full flex-col items-center"
+					className="mt-7 flex w-36 items-center gap-3 text-[#A98445]"
 					variants={slowReveal}
-					transition={{ delay: 1.55, duration: 1.2, ease: 'easeOut' }}
+					transition={{ delay: 1.25, duration: 0.9 }}
+				>
+					<span className="h-px flex-1 bg-[#A98445]/40" />
+					<span className="text-xs">♥</span>
+					<span className="h-px flex-1 bg-[#A98445]/40" />
+				</motion.div>
+
+				<motion.div
+					className="mt-6 flex w-full flex-col items-center"
+					variants={slowReveal}
+					transition={{ delay: 1.4, duration: 1.1, ease: 'easeOut' }}
 				>
 					<WeddingAudioPlayer startAtSeconds={0} />
 				</motion.div>
