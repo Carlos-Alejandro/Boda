@@ -30,6 +30,8 @@ export function DressCodeSection() {
 							<motion.img
 								src={formalAttire}
 								alt="Vestido formal en tonos oliva y traje oscuro elegante"
+								loading="lazy"
+								decoding="async"
 								className="h-[285px] w-full object-contain"
 								initial={{ opacity: 0, scale: 1.04 }}
 								whileInView={{ opacity: 1, scale: 1 }}

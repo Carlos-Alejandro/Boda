@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 
+import { useWeddingAudio } from '../../audio/WeddingAudioContext';
 import frameImage from '../../assets/splash/frame.png';
 import lettersImage from '../../assets/splash/letters.png';
 import namesImage from '../../assets/splash/names.png';
@@ -17,7 +18,14 @@ function preloadImages(images: string[]) {
 			return new Promise<void>((resolve) => {
 				const img = new Image();
 
-				img.onload = () => resolve();
+				img.onload = () => {
+					if (typeof img.decode === 'function') {
+						img.decode().catch(() => undefined).finally(resolve);
+						return;
+					}
+
+					resolve();
+				};
 				img.onerror = () => resolve();
 				img.src = src;
 			});
@@ -27,6 +35,7 @@ function preloadImages(images: string[]) {
 
 export function SplashScreen() {
 	const navigate = useNavigate();
+	const { play } = useWeddingAudio();
 	const [isLeaving, setIsLeaving] = useState(false);
 	const [canAnimate, setCanAnimate] = useState(false);
 
@@ -58,11 +67,12 @@ export function SplashScreen() {
 	const handleStart = () => {
 		if (isLeaving || !canAnimate) return;
 
+		void play();
 		setIsLeaving(true);
 
 		window.setTimeout(() => {
 			navigate('/inicio', { replace: true });
-		}, 900);
+		}, 750);
 	};
 
 	return (
@@ -73,7 +83,7 @@ export function SplashScreen() {
 				animate={
 					!canAnimate ? { opacity: 0 } : isLeaving ? { opacity: 0 } : { opacity: 1 }
 				}
-				transition={{ duration: 1, ease: 'easeInOut' }}
+				transition={{ duration: isLeaving ? 0.75 : 1, ease: 'easeInOut' }}
 			>
 				<motion.img
 					src={florUpImage}
@@ -123,7 +133,7 @@ export function SplashScreen() {
 								? { opacity: 0, scale: 1.035, filter: 'blur(7px)' }
 								: { opacity: 1, scale: 1, filter: 'blur(0px)' }
 					}
-					transition={{ duration: 1, ease: 'easeInOut' }}
+					transition={{ duration: isLeaving ? 0.75 : 1, ease: 'easeInOut' }}
 				>
 					<motion.div
 						className="splash-logo-wrap"

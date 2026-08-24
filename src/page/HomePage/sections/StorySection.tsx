@@ -15,6 +15,8 @@ export function StorySection() {
 			<motion.img
 				src={florInicioUp}
 				alt=""
+				loading="lazy"
+				decoding="async"
 				aria-hidden="true"
 				className="pointer-events-none absolute -left-1 top-0 w-72 select-none opacity-90"
 				initial={{ opacity: 0, x: -24, y: -24, scale: 0.92, rotate: -4 }}
@@ -26,6 +28,8 @@ export function StorySection() {
 			<motion.img
 				src={florInicioDown}
 				alt=""
+				loading="lazy"
+				decoding="async"
 				aria-hidden="true"
 				className="pointer-events-none absolute -bottom-3 right-0 w-76 select-none opacity-90"
 				initial={{ opacity: 0, x: 24, y: 24, scale: 0.92, rotate: 4 }}
@@ -107,7 +111,7 @@ export function StorySection() {
 					variants={slowReveal}
 					transition={{ delay: 1.4, duration: 1.1, ease: 'easeOut' }}
 				>
-					<WeddingAudioPlayer startAtSeconds={0} />
+					<WeddingAudioPlayer />
 				</motion.div>
 			</motion.div>
 		</section>

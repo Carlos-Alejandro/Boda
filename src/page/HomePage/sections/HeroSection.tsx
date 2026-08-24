@@ -6,15 +6,19 @@ import heroImage from '../../../assets/hero/hero-main2.jpeg';
 import swipeUpAnimation from '../../../assets/animations/swipe-up.json';
 import ornamentAnimation from '../../../assets/animations/Ornament.json';
 
-const heroDelay = 0.8;
+const heroDelay = 0.15;
+const ornamentStart = 1.9;
 
 export function HeroSection() {
 	const ornamentRef = useRef<Player>(null);
+	const ornamentReadyRef = useRef(false);
+	const ornamentStartRequestedRef = useRef(false);
 
 	useEffect(() => {
 		const ornamentTimer = window.setTimeout(() => {
-			ornamentRef.current?.play();
-		}, (heroDelay + 3.2) * 1000);
+			ornamentStartRequestedRef.current = true;
+			if (ornamentReadyRef.current) ornamentRef.current?.play();
+		}, ornamentStart * 1000);
 
 		return () => {
 			window.clearTimeout(ornamentTimer);
@@ -26,6 +30,8 @@ export function HeroSection() {
 			<img
 				src={heroImage}
 				alt="América y Carlos"
+				fetchPriority="high"
+				decoding="async"
 				className="absolute inset-0 h-full w-full object-cover"
 			/>
 
@@ -37,7 +43,7 @@ export function HeroSection() {
 					className="pt-[5svh]"
 					initial={{ opacity: 0, y: 14 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: heroDelay + 0.45, duration: 1, ease: 'easeOut' }}
+					transition={{ delay: heroDelay, duration: 0.75, ease: 'easeOut' }}
 				>
 					<svg viewBox="0 0 300 90" className="h-20 w-72 overflow-visible">
 						<path
@@ -54,18 +60,15 @@ export function HeroSection() {
 					</svg>
 				</motion.div>
 
-				<motion.div
+				<div
 					className="mt-2"
-					initial={{ opacity: 0, y: 22 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: heroDelay + 0.9, duration: 1.1, ease: 'easeOut' }}
 				>
 					<h1 className="font-['Allura'] text-[5.8rem] font-normal leading-[0.78] tracking-normal drop-shadow-[0_10px_24px_rgba(0,0,0,0.35)]">
 						<motion.span
 							className="block"
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
-							transition={{ delay: heroDelay + 1, duration: 1, ease: 'easeOut' }}
+							transition={{ delay: 0.65, duration: 0.75, ease: 'easeOut' }}
 						>
 							América
 						</motion.span>
@@ -74,7 +77,7 @@ export function HeroSection() {
 							className="block py-2 font-['Allura'] text-[4rem] text-[#D8B46A]"
 							initial={{ opacity: 0, scale: 0.85 }}
 							animate={{ opacity: 1, scale: 1 }}
-							transition={{ delay: heroDelay + 1.35, duration: 0.8, ease: 'easeOut' }}
+							transition={{ delay: 1.05, duration: 0.65, ease: 'easeOut' }}
 						>
 							&
 						</motion.span>
@@ -83,40 +86,57 @@ export function HeroSection() {
 							className="block"
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
-							transition={{ delay: heroDelay + 1.7, duration: 1, ease: 'easeOut' }}
+							transition={{ delay: 1.4, duration: 0.75, ease: 'easeOut' }}
 						>
 							Carlos
 						</motion.span>
 					</h1>
-				</motion.div>
+				</div>
 
 				<div className="flex-1" />
 
-				<motion.div
+				<div
 					className="mb-[18svh] flex flex-col items-center"
-					initial={{ opacity: 0, y: 18 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: heroDelay + 2.35, duration: 0.9, ease: 'easeOut' }}
 				>
-					<Player
-						ref={ornamentRef}
-						autoplay={false}
-						loop={false}
-						keepLastFrame
-						src={ornamentAnimation}
-						className="h-14 w-72 opacity-90"
-					/>
+					<motion.div
+						initial={{ opacity: 0, y: 12 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ delay: ornamentStart, duration: 0.45, ease: 'easeOut' }}
+					>
+						<Player
+							ref={ornamentRef}
+							autoplay={false}
+							loop={false}
+							keepLastFrame
+							src={ornamentAnimation}
+							onEvent={(event) => {
+								if (event === 'load' || event === 'ready') {
+									ornamentReadyRef.current = true;
+									ornamentRef.current?.setPlayerSpeed(1.8);
+									if (ornamentStartRequestedRef.current) {
+										ornamentRef.current?.play();
+									}
+								}
+							}}
+							className="h-14 w-72 opacity-90"
+						/>
+					</motion.div>
 
-					<p className="-mt-1 font-['Cinzel'] text-xs font-medium uppercase tracking-[0.42em] text-[#F6EAD4]">
+					<motion.p
+						className="-mt-1 font-['Cinzel'] text-xs font-medium uppercase tracking-[0.42em] text-[#F6EAD4]"
+						initial={{ opacity: 0, y: 10 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ delay: 2.75, duration: 0.7, ease: 'easeOut' }}
+					>
 						18 Marzo 2028
-					</p>
-				</motion.div>
+					</motion.p>
+				</div>
 
 				<motion.div
 					className="absolute bottom-14 flex flex-col items-center"
 					initial={{ opacity: 0, y: 14 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: heroDelay + 5.6, duration: 1, ease: 'easeOut' }}
+					transition={{ delay: 4.05, duration: 0.7, ease: 'easeOut' }}
 				>
 					<Player
 						autoplay

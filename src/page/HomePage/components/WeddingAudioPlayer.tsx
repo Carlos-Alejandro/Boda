@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import {
 	Pause,
@@ -9,77 +8,19 @@ import {
 	SkipForward,
 } from 'lucide-react';
 
-import weddingSong from '../../../assets/audio/wedding-song2.mp3';
+import { useWeddingAudio } from '../../../audio/WeddingAudioContext';
 
 interface WeddingAudioPlayerProps {
 	className?: string;
-	startAtSeconds?: number;
 }
 
 export function WeddingAudioPlayer({
 	className = '',
-	startAtSeconds = 0,
 }: WeddingAudioPlayerProps) {
-	const audioRef = useRef<HTMLAudioElement>(null);
-	const [isPlaying, setIsPlaying] = useState(false);
-	const [progress, setProgress] = useState(0);
-	const [hasInteracted, setHasInteracted] = useState(false);
-
-	useEffect(() => {
-		const audio = audioRef.current;
-		if (!audio) return;
-
-		audio.volume = 0.55;
-
-		const handleLoadedMetadata = () => {
-			audio.currentTime = startAtSeconds;
-		};
-
-		audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-
-		audio
-			.play()
-			.then(() => setIsPlaying(true))
-			.catch(() => setIsPlaying(false));
-
-		return () => {
-			audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-		};
-	}, [startAtSeconds]);
-
-	const toggleAudio = async () => {
-		const audio = audioRef.current;
-		if (!audio) return;
-		setHasInteracted(true);
-
-		if (audio.paused) {
-			await audio.play();
-			setIsPlaying(true);
-			return;
-		}
-
-		audio.pause();
-		setIsPlaying(false);
-	};
-
-	const handleTimeUpdate = () => {
-		const audio = audioRef.current;
-		if (!audio || !audio.duration) return;
-
-		setProgress((audio.currentTime / audio.duration) * 100);
-	};
+	const { isPlaying, progress, hasInteracted, toggle } = useWeddingAudio();
 
 	return (
 		<div className={`flex flex-col items-center ${className}`}>
-			<audio
-				ref={audioRef}
-				src={weddingSong}
-				loop
-				onTimeUpdate={handleTimeUpdate}
-				onPlay={() => setIsPlaying(true)}
-				onPause={() => setIsPlaying(false)}
-			/>
-
 			<p className="font-['Allura'] text-[1.75rem] leading-none text-[#A98445]">Que suene el amor</p>
 
 			<div className="mt-3 flex h-3 items-end justify-center gap-1" aria-hidden="true">
@@ -114,7 +55,7 @@ export function WeddingAudioPlayer({
 				<motion.button
 					type="button"
 					aria-label={isPlaying ? 'Pausar canción' : 'Reproducir canción'}
-					onClick={toggleAudio}
+					onClick={() => void toggle()}
 					className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#7C8B68] text-[#FFF8EC] shadow-[0_18px_38px_rgba(95,89,71,0.22)]"
 					whileTap={{ scale: 0.92 }}
 				>

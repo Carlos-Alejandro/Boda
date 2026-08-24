@@ -142,7 +142,7 @@ export function GalleryLightbox({ images, initialIndex, onClose }: GalleryLightb
 								<button key={`${image}-${index}`} type="button"
 									className={`h-14 w-11 shrink-0 overflow-hidden rounded-lg border-2 transition ${index === currentIndex ? 'border-[#D5B877] opacity-100 shadow-[0_0_16px_rgba(213,184,119,0.35)]' : 'border-transparent opacity-55 hover:opacity-90'}`}
 									onClick={() => { goTo(index, index >= currentIndex ? 1 : -1); revealControls(); }} aria-label={`Ver fotografía ${index + 1}`}>
-									<img src={image} alt="" className="h-full w-full object-cover" />
+									<img src={image} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
 								</button>
 							))}
 						</div>

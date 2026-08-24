@@ -31,6 +31,8 @@ export function TimelineSection() {
 			<motion.img
 				src={florInicioUp}
 				alt=""
+				loading="lazy"
+				decoding="async"
 				aria-hidden="true"
 				className="pointer-events-none absolute -left-0 top-0 w-62 select-none opacity-85"
 				initial={{ opacity: 0, x: -14, y: -14, scale: 0.96 }}
@@ -42,6 +44,8 @@ export function TimelineSection() {
 			<motion.img
 				src={florInicioDown}
 				alt=""
+				loading="lazy"
+				decoding="async"
 				aria-hidden="true"
 				className="pointer-events-none absolute -bottom-3 -right-0 w-62 select-none opacity-85"
 				initial={{ opacity: 0, x: 14, y: 14, scale: 0.96 }}

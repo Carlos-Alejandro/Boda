@@ -35,6 +35,8 @@ function GalleryImageButton({ index, className, delay = 0, onOpen }: GalleryImag
 			<img
 				src={galleryImages[index]}
 				alt={index === 0 ? 'América y Carlos' : ''}
+				loading="lazy"
+				decoding="async"
 				className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
 			/>
 			<div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#2E291D]/25 via-transparent to-transparent opacity-60 transition group-hover:opacity-90" />

@@ -47,6 +47,8 @@ export function CountdownSection() {
 			<motion.img
 				src={florInicioDown}
 				alt=""
+				loading="lazy"
+				decoding="async"
 				aria-hidden="true"
 				className="pointer-events-none absolute -bottom-3 -left-1 w-72 -scale-x-100 select-none opacity-85"
 				initial={{ opacity: 0, x: -14, y: 14, scale: 0.96 }}
@@ -58,6 +60,8 @@ export function CountdownSection() {
 			<motion.img
 				src={florInicioDown}
 				alt=""
+				loading="lazy"
+				decoding="async"
 				aria-hidden="true"
 				className="pointer-events-none absolute -bottom-3 right-0 w-72 select-none opacity-85"
 				initial={{ opacity: 0, x: 14, y: 14, scale: 0.96 }}
@@ -70,6 +74,8 @@ export function CountdownSection() {
 				<motion.img
 					src={avesListon}
 					alt=""
+					loading="lazy"
+					decoding="async"
 					aria-hidden="true"
 					className=" w-full max-w-[285px] -translate-y-9 select-none"
 					initial={{ opacity: 0, y: 16, scale: 0.98 }}
