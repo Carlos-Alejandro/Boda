@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router';
 
 import { DeviceGate } from '../layouts/DeviceGate';
 import { HomePage } from '../page/HomePage/HomePage';
+import { InvitationPage } from '../page/InvitationPage/InvitationPage';
 import { SplashScreen } from '../page/SplashScreen/SplashScreen';
 
 export function AppRoutes() {
@@ -18,9 +19,27 @@ export function AppRoutes() {
 
 			<Route
 				path="/inicio"
+					element={
+					<DeviceGate>
+						<HomePage showRsvp={false} />
+					</DeviceGate>
+				}
+			/>
+
+			<Route
+				path="/invitacion/:id"
 				element={
 					<DeviceGate>
-						<HomePage />
+						<SplashScreen />
+					</DeviceGate>
+				}
+			/>
+
+			<Route
+				path="/invitacion/:id/inicio"
+				element={
+					<DeviceGate>
+						<InvitationPage />
 					</DeviceGate>
 				}
 			/>

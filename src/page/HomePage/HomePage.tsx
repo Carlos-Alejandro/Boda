@@ -9,7 +9,11 @@ import { StorySection } from './sections/StorySection';
 import {TimelineSection} from './sections/TimelineSection';
 import { LocationSection } from './sections/LocationSection';
 
-export function HomePage() {
+interface HomePageProps {
+	showRsvp: boolean;
+}
+
+export function HomePage({ showRsvp }: HomePageProps) {
 	return (
 		<main className="min-h-dvh bg-white text-[#5F5947]">
 			<div className="mx-auto w-full max-w-[390px] overflow-hidden bg-[#FAF8F3] shadow-[0_24px_70px_rgba(95,89,71,0.12)]">
@@ -21,7 +25,7 @@ export function HomePage() {
 				<TimelineSection />
 				<DressCodeSection />
 				<GiftSuggestionSection />
-				<RSVPSection />
+				{showRsvp && <RSVPSection />}
 				<FooterSection />
 			</div>
 		</main>
