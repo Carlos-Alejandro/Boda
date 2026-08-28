@@ -1,0 +1,172 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /invitations/{invitationId} {
+
+      // =====================================================
+      // LECTURA
+      // =====================================================
+
+      // Se puede leer una invitación cuando ya se conoce su ID.
+      allow get: if true;
+
+      // No se permite descargar/listar toda la colección.
+      allow list: if false;
+
+
+      // =====================================================
+      // CREACIÓN Y ELIMINACIÓN
+      // =====================================================
+
+      // Los invitados jamás crean o eliminan invitaciones.
+      allow create, delete: if false;
+
+
+      // =====================================================
+      // ACTUALIZACIÓN DEL RSVP
+      // =====================================================
+
+      allow update: if
+
+        // -----------------------------------------------------
+        // FECHA LÍMITE
+        // -----------------------------------------------------
+        //
+        // Cierre general:
+        // 11 de marzo de 2028 a las 11:59 p. m.
+        // hora de Cancún (UTC-5).
+        //
+        // A partir del 12 de marzo a las 00:00
+        // queda bloqueado normalmente.
+        //
+        (
+          request.time < timestamp.value('2028-03-12T05:00:00Z')
+
+          ||
+
+          // EXCEPCIÓN INDIVIDUAL:
+          // Si nosotros colocamos una fecha futura en
+          // editOverrideUntil, esa invitación puede seguir
+          // modificándose hasta esa fecha.
+          (
+            resource.data.editOverrideUntil != null
+            && resource.data.editOverrideUntil is timestamp
+            && request.time < resource.data.editOverrideUntil
+          )
+        )
+
+
+        // -----------------------------------------------------
+        // CAMPOS ADMINISTRATIVOS
+        // -----------------------------------------------------
+        //
+        // Estos campos jamás pueden modificarse desde
+        // la invitación pública.
+
+        && request.resource.data.displayName
+          == resource.data.displayName
+
+        && request.resource.data.maxGuests
+          == resource.data.maxGuests
+
+        && request.resource.data.replacementsAllowed
+          == resource.data.replacementsAllowed
+
+        && request.resource.data.editOverrideUntil
+          == resource.data.editOverrideUntil
+
+
+        // -----------------------------------------------------
+        // TIPOS DE CAMPOS ADMINISTRATIVOS
+        // -----------------------------------------------------
+
+        && request.resource.data.displayName is string
+
+        && request.resource.data.maxGuests is int
+
+        && request.resource.data.replacementsAllowed is bool
+
+        && (
+          request.resource.data.editOverrideUntil == null
+          || request.resource.data.editOverrideUntil is timestamp
+        )
+
+
+        // -----------------------------------------------------
+        // CAMPOS OBLIGATORIOS
+        // -----------------------------------------------------
+
+        && request.resource.data.keys().hasAll([
+          'displayName',
+          'maxGuests',
+          'replacementsAllowed',
+          'editOverrideUntil',
+          'rsvpStatus',
+          'message',
+          'updatedAt',
+          'guests'
+        ])
+
+
+        // -----------------------------------------------------
+        // ÚNICOS CAMPOS QUE PUEDE MODIFICAR EL RSVP
+        // -----------------------------------------------------
+
+        && request.resource.data
+          .diff(resource.data)
+          .affectedKeys()
+          .hasOnly([
+            'guests',
+            'message',
+            'rsvpStatus',
+            'updatedAt'
+          ])
+
+
+        // -----------------------------------------------------
+        // ESTADO RSVP
+        // -----------------------------------------------------
+
+        && request.resource.data.rsvpStatus in [
+          'confirmed',
+          'partial',
+          'declined'
+        ]
+
+
+        // -----------------------------------------------------
+        // MENSAJE
+        // -----------------------------------------------------
+
+        && request.resource.data.message is string
+
+        && request.resource.data.message.size() <= 500
+
+
+        // -----------------------------------------------------
+        // INVITADOS / CUPOS
+        // -----------------------------------------------------
+
+        && request.resource.data.guests is list
+
+        // El invitado no puede agregar ni quitar lugares.
+        && request.resource.data.guests.size()
+          == resource.data.guests.size()
+
+        // El número de lugares siempre coincide
+        // con el cupo autorizado.
+        && request.resource.data.guests.size()
+          == request.resource.data.maxGuests
+
+
+        // -----------------------------------------------------
+        // FECHA DE ACTUALIZACIÓN
+        // -----------------------------------------------------
+
+        // Debe provenir de serverTimestamp().
+        && request.resource.data.updatedAt == request.time;
+    }
+  }
+}
