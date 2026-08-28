@@ -6,8 +6,13 @@ import { doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 
 import { useInvitation } from '../../../firebase/InvitationContext';
 import { db } from '../../../firebase/firebase';
-
-type AttendanceResponse = boolean | null;
+import {
+	buildUpdatedGuests,
+	calculateRsvpStatus,
+	getOriginalName,
+	getOriginalShortName,
+	type AttendanceResponse,
+} from './rsvpLogic';
 
 type SaveStatus = 'idle' | 'saving' | 'success' | 'error';
 
@@ -152,27 +157,6 @@ export function RSVPSection() {
 		0,
 	);
 
-	const getOriginalName = (
-		guest: (typeof invitation.guests)[number],
-	) => {
-		if (guest.type === 'replacement' && guest.originalName) {
-			return guest.originalName;
-		}
-
-		return guest.name;
-	};
-
-	const getOriginalShortName = (
-		guest: (typeof invitation.guests)[number],
-	) => {
-		const originalName = getOriginalName(guest);
-
-		return (
-			originalName.trim().split(/\s+/)[0] ||
-			guest.shortName
-		);
-	};
-
 	const nominalGuestCount = invitation.guests.filter(
 		(guest) => guest.type !== 'open',
 	).length;
@@ -279,93 +263,15 @@ export function RSVPSection() {
 			return;
 		}
 
-		const updatedGuests = invitation.guests.map(
-			(guest, index) => {
-				if (guest.type === 'open') {
-					const openGuestName =
-						openGuestNames[index]?.trim() ?? '';
-
-					if (!openGuestName) {
-						return {
-							name: '',
-							shortName: 'Acompañante',
-							type: 'open' as const,
-							attending: false,
-						};
-					}
-
-					return {
-						name: openGuestName,
-						shortName:
-							openGuestName.split(/\s+/)[0] ||
-							'Acompañante',
-						type: 'open' as const,
-						attending: true,
-					};
-				}
-
-				const response = responses[index];
-
-				const replacementName =
-					replacementNames[index]?.trim() ?? '';
-
-				const originalName = getOriginalName(guest);
-				const originalShortName =
-					getOriginalShortName(guest);
-
-				if (response === true) {
-					return {
-						name: originalName,
-						shortName: originalShortName,
-						type: 'known' as const,
-						attending: true,
-					};
-				}
-
-				if (
-					response === false &&
-					invitation.replacementsAllowed &&
-					replacementName
-				) {
-					return {
-						name: replacementName,
-						shortName:
-							replacementName.split(/\s+/)[0] ||
-							replacementName,
-						type: 'replacement' as const,
-						attending: true,
-						originalName,
-					};
-				}
-
-				return {
-					name: originalName,
-					shortName: originalShortName,
-					type: 'known' as const,
-					attending: false,
-				};
-			},
+		const updatedGuests = buildUpdatedGuests(
+			invitation.guests,
+			invitation.replacementsAllowed,
+			responses,
+			replacementNames,
+			openGuestNames,
 		);
 
-		const attendingCount = updatedGuests.filter(
-			(guest) => guest.attending === true,
-		).length;
-
-		const declinedKnownCount = updatedGuests.filter(
-			(guest) =>
-				guest.type === 'known' &&
-				guest.attending === false,
-		).length;
-
-		let rsvpStatus: 'confirmed' | 'partial' | 'declined';
-
-		if (attendingCount === 0) {
-			rsvpStatus = 'declined';
-		} else if (declinedKnownCount > 0) {
-			rsvpStatus = 'partial';
-		} else {
-			rsvpStatus = 'confirmed';
-		}
+		const rsvpStatus = calculateRsvpStatus(updatedGuests);
 
 		try {
 			setSaveStatus('saving');
