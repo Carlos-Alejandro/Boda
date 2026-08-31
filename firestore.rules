@@ -10,7 +10,9 @@ service cloud.firestore {
       // =====================================================
 
       // Se puede leer una invitación cuando ya se conoce su ID.
-      allow get: if true;
+      allow get: if
+        !('isArchived' in resource.data)
+        || resource.data.isArchived == false;
 
       // No se permite descargar/listar toda la colección.
       allow list: if false;
@@ -29,6 +31,13 @@ service cloud.firestore {
       // =====================================================
 
       allow update: if
+
+        (
+          !('isArchived' in resource.data)
+          || resource.data.isArchived == false
+        )
+
+        &&
 
         // -----------------------------------------------------
         // FECHA LÍMITE

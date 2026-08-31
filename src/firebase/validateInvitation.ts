@@ -97,6 +97,8 @@ export function parseInvitation(
 		replacementsAllowed,
 		rsvpStatus,
 		message,
+		isArchived,
+		archivedAt,
 		updatedAt,
 		editOverrideUntil,
 		guests,
@@ -129,6 +131,13 @@ export function parseInvitation(
 		return null;
 	}
 
+	const parsedIsArchived =
+		isArchived === undefined ? false : isArchived;
+
+	if (typeof parsedIsArchived !== 'boolean') {
+		return null;
+	}
+
 	if (
 		!Array.isArray(guests) ||
 		!guests.every(isValidGuest)
@@ -141,6 +150,13 @@ export function parseInvitation(
 	}
 
 	let parsedEditOverrideUntil: Date | null = null;
+	let parsedArchivedAt: Date | null = null;
+
+	if (archivedAt instanceof Timestamp) {
+		parsedArchivedAt = archivedAt.toDate();
+	} else if (archivedAt !== null && archivedAt !== undefined) {
+		return null;
+	}
 
 	if (editOverrideUntil instanceof Timestamp) {
 		parsedEditOverrideUntil =
@@ -156,6 +172,8 @@ export function parseInvitation(
 		replacementsAllowed,
 		rsvpStatus,
 		message,
+		isArchived: parsedIsArchived,
+		archivedAt: parsedArchivedAt,
 		updatedAt: updatedAt ?? null,
 		editOverrideUntil: parsedEditOverrideUntil,
 		guests,

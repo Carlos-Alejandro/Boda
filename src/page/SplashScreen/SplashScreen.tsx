@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate, useParams } from 'react-router';
+import { doc, getDoc } from 'firebase/firestore';
 
 import { useWeddingAudio } from '../../audio/WeddingAudioContext';
+import { db } from '../../firebase/firebase';
+import { InvitationUnavailable } from '../InvitationPage/InvitationUnavailable';
+import { loadPublicInvitation } from '../InvitationPage/loadPublicInvitation';
 import frameImage from '../../assets/splash/frame.png';
 import lettersImage from '../../assets/splash/letters.png';
 import namesImage from '../../assets/splash/names.png';
@@ -42,6 +46,30 @@ export function SplashScreen() {
 
 	const [isLeaving, setIsLeaving] = useState(false);
 	const [canAnimate, setCanAnimate] = useState(false);
+	const [invitationAccess, setInvitationAccess] = useState<
+		'checking' | 'allowed' | 'unavailable'
+	>(id ? 'checking' : 'allowed');
+
+	useEffect(() => {
+		if (!id) {
+			setInvitationAccess('allowed');
+			return;
+		}
+
+		let isMounted = true;
+		const invitationRef = doc(db, 'invitations', id);
+		loadPublicInvitation(() => getDoc(invitationRef))
+			.then(() => {
+				if (isMounted) setInvitationAccess('allowed');
+			})
+			.catch(() => {
+				if (isMounted) setInvitationAccess('unavailable');
+			});
+
+		return () => {
+			isMounted = false;
+		};
+	}, [id]);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -88,6 +116,11 @@ export function SplashScreen() {
 			});
 		}, 750);
 	};
+
+	if (invitationAccess === 'checking') return null;
+	if (invitationAccess === 'unavailable') {
+		return <InvitationUnavailable />;
+	}
 
 	return (
 		<section className="splash-screen">

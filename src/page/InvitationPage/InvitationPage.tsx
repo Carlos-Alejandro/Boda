@@ -7,15 +7,15 @@ import {
 	InvitationProvider,
 	type Invitation,
 } from '../../firebase/InvitationContext';
-import { parseInvitation } from '../../firebase/validateInvitation';
 import { HomePage } from '../HomePage/HomePage';
+import {
+	loadPublicInvitation,
+} from './loadPublicInvitation';
+import { InvitationUnavailable } from './InvitationUnavailable';
 
 export function InvitationPage() {
 	const { id } = useParams();
-
-	const [invitation, setInvitation] =
-		useState<Invitation | null>(null);
-
+	const [invitation, setInvitation] = useState<Invitation | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 
@@ -28,49 +28,13 @@ export function InvitationPage() {
 			}
 
 			try {
-				const invitationRef = doc(
-					db,
-					'invitations',
-					id,
+				const invitationRef = doc(db, 'invitations', id);
+				const loadedInvitation = await loadPublicInvitation(
+					() => getDoc(invitationRef),
 				);
-
-				const snapshot =
-					await getDoc(invitationRef);
-
-				if (!snapshot.exists()) {
-					console.error(
-						'La invitación no existe:',
-						id,
-					);
-
-					setError(true);
-					return;
-				}
-
-				const parsedInvitation =
-					parseInvitation(
-						snapshot.id,
-						snapshot.data(),
-					);
-
-				if (!parsedInvitation) {
-					console.error(
-						'La invitación contiene datos inválidos:',
-						snapshot.id,
-					);
-
-					setError(true);
-					return;
-				}
-
-				setInvitation(parsedInvitation);
+				setInvitation(loadedInvitation);
 				setError(false);
-			} catch (err) {
-				console.error(
-					'Error cargando invitación:',
-					err,
-				);
-
+			} catch {
 				setError(true);
 			} finally {
 				setLoading(false);
@@ -79,6 +43,10 @@ export function InvitationPage() {
 
 		void loadInvitation();
 	}, [id]);
+
+	if (!loading && error) {
+		return <InvitationUnavailable />;
+	}
 
 	return (
 		<InvitationProvider

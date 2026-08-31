@@ -4,6 +4,8 @@ import {
 	useContext,
 } from 'react';
 
+import { getRsvpAvailability } from './rsvpAvailability';
+
 export interface Guest {
 	name: string;
 	shortName: string;
@@ -19,6 +21,8 @@ export interface Invitation {
 	replacementsAllowed: boolean;
 	rsvpStatus: string;
 	message: string;
+	isArchived: boolean;
+	archivedAt: Date | null;
 	updatedAt: unknown;
 	editOverrideUntil: Date | null;
 	guests: Guest[];
@@ -42,8 +46,6 @@ interface InvitationProviderProps {
 	children: ReactNode;
 }
 
-const RSVP_CLOSE_DATE = new Date('2028-03-12T05:00:00.000Z');
-
 export function InvitationProvider({
 	invitation,
 	loading,
@@ -52,17 +54,8 @@ export function InvitationProvider({
 }: InvitationProviderProps) {
 	const now = new Date();
 
-	const isGeneralRsvpClosed =
-		now.getTime() >= RSVP_CLOSE_DATE.getTime();
-
-	const hasActiveOverride =
-		invitation?.editOverrideUntil instanceof Date &&
-		now.getTime() < invitation.editOverrideUntil.getTime();
-
-	const canEditRsvp =
-		!isGeneralRsvpClosed || hasActiveOverride;
-
-	const isRsvpClosed = !canEditRsvp;
+	const { canEditRsvp, isRsvpClosed } =
+		getRsvpAvailability(invitation, now);
 
 	return (
 		<InvitationContext.Provider
