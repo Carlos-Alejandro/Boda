@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 
-import florInicioDown from '../../../assets/story/flor-inicio-down.png';
-import florInicioUp from '../../../assets/story/flor-inicio-up.png';
+import florInicioDown from '../../../assets/story/flor-inicio-down.webp';
+import florInicioUp from '../../../assets/story/flor-inicio-up.webp';
 import { WeddingAudioPlayer } from '../components/WeddingAudioPlayer';
 
 const slowReveal = {

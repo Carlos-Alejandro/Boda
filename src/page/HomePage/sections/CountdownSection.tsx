@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 
-import florInicioDown from '../../../assets/story/flor-inicio-down.png';
+import florInicioDown from '../../../assets/story/flor-inicio-down.webp';
 import avesListon from '../../../assets/story/aves-liston.png';
 
 interface TimeLeft {

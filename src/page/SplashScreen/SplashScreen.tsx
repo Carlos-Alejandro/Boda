@@ -7,11 +7,11 @@ import { useWeddingAudio } from '../../audio/WeddingAudioContext';
 import { db } from '../../firebase/firebase';
 import { InvitationUnavailable } from '../InvitationPage/InvitationUnavailable';
 import { loadPublicInvitation } from '../InvitationPage/loadPublicInvitation';
-import frameImage from '../../assets/splash/frame.png';
-import lettersImage from '../../assets/splash/letters.png';
-import namesImage from '../../assets/splash/names.png';
-import florUpImage from '../../assets/splash/flor-up.png';
-import florDownImage from '../../assets/splash/flor-down.png';
+import frameImage from '../../assets/splash/frame.webp';
+import lettersImage from '../../assets/splash/letters.webp';
+import namesImage from '../../assets/splash/names.webp';
+import florUpImage from '../../assets/splash/flor-up.webp';
+import florDownImage from '../../assets/splash/flor-down.webp';
 import heroImage from '../../assets/hero/hero-main2.jpeg';
 
 import './SplashScreen.css';

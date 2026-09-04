@@ -59,14 +59,14 @@
 }
 
 .splash-corner-flower-up {
-	top: -8px;
-	right: -18px;
+	top: 0;
+	right: 7px;
 	transform-origin: top right;
 }
 
 .splash-corner-flower-down {
-	bottom: -10px;
-	left: -20px;
+	bottom: 0;
+	left: 7px;
 	transform-origin: bottom left;
 }
 
@@ -148,13 +148,13 @@
 	}
 
 	.splash-corner-flower-up {
-		top: -12px;
-		right: -30px;
+		top: 0px;
+		right: 4px;
 	}
 
 	.splash-corner-flower-down {
-		bottom: -16px;
-		left: -34px;
+		bottom: 4px;
+		left: 0;
 	}
 
 	.splash-logo-wrap {

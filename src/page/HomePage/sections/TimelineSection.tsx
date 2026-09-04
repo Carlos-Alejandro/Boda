@@ -10,8 +10,8 @@ import {
 	Utensils,
 } from 'lucide-react';
 
-import florInicioUp from '../../../assets/story/flor-inicio-up.png';
-import florInicioDown from '../../../assets/story/flor-inicio-down.png';
+import florInicioUp from '../../../assets/story/flor-inicio-up.webp';
+import florInicioDown from '../../../assets/story/flor-inicio-down.webp';
 
 const timelineItems = [
 	{ time: '4:00 PM', label: 'Ceremonia religiosa', icon: Church, side: 'left' },
