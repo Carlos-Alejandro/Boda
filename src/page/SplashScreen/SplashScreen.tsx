@@ -16,6 +16,20 @@ import heroImage from '../../assets/hero/hero-main2.jpeg';
 
 import './SplashScreen.css';
 
+type NavigatorWithConnection = Navigator & {
+	connection?: {
+		saveData?: boolean;
+	};
+};
+
+type WindowWithIdleCallback = Window & {
+	requestIdleCallback?: (
+		callback: () => void,
+		options?: { timeout: number },
+	) => number;
+	cancelIdleCallback?: (handle: number) => void;
+};
+
 function preloadImages(images: string[]) {
 	return Promise.all(
 		images.map((src) => {
@@ -42,7 +56,7 @@ export function SplashScreen() {
 	const navigate = useNavigate();
 	const { id } = useParams();
 
-	const { play } = useWeddingAudio();
+	const { play, prepareAudio } = useWeddingAudio();
 
 	const [isLeaving, setIsLeaving] = useState(false);
 	const [canAnimate, setCanAnimate] = useState(false);
@@ -73,6 +87,8 @@ export function SplashScreen() {
 
 	useEffect(() => {
 		let isMounted = true;
+		let idleCallbackId: number | undefined;
+		let fallbackTimeoutId: number | undefined;
 
 		const loadAssets = async () => {
 			await preloadImages([
@@ -87,14 +103,35 @@ export function SplashScreen() {
 			if (!isMounted) return;
 
 			setCanAnimate(true);
+
+			const connection = (navigator as NavigatorWithConnection).connection;
+			if (connection?.saveData) return;
+
+			const idleWindow = window as WindowWithIdleCallback;
+			if (idleWindow.requestIdleCallback) {
+				idleCallbackId = idleWindow.requestIdleCallback(prepareAudio, {
+					timeout: 1000,
+				});
+				return;
+			}
+
+			fallbackTimeoutId = window.setTimeout(prepareAudio, 0);
 		};
 
 		void loadAssets();
 
 		return () => {
 			isMounted = false;
+
+			const idleWindow = window as WindowWithIdleCallback;
+			if (idleCallbackId !== undefined) {
+				idleWindow.cancelIdleCallback?.(idleCallbackId);
+			}
+			if (fallbackTimeoutId !== undefined) {
+				window.clearTimeout(fallbackTimeoutId);
+			}
 		};
-	}, []);
+	}, [prepareAudio]);
 
 	const handleStart = () => {
 		if (isLeaving || !canAnimate) return;

@@ -4,6 +4,7 @@ export interface WeddingAudioContextValue {
 	isPlaying: boolean;
 	progress: number;
 	hasInteracted: boolean;
+	prepareAudio: () => void;
 	play: () => Promise<void>;
 	toggle: () => Promise<void>;
 }
