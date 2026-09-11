@@ -1,7 +1,7 @@
 import { CircleSlash2, Heart, Shirt, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 
-import formalAttire from '../../../assets/dresscode/formal-attire-watercolor.png';
+import formalAttire from '../../../assets/dresscode/Vestimenta.webp';
 
 export function DressCodeSection() {
 	return (
