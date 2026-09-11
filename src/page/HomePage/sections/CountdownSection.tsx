@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useInView, useReducedMotion } from 'motion/react';
 
 import florInicioDown from '../../../assets/story/flor-inicio-down.webp';
-import avesListon from '../../../assets/story/aves-liston.png';
+import avesListon from '../../../assets/story/aves-liston-animado.svg';
 
 interface TimeLeft {
 	days: number;
@@ -14,6 +14,9 @@ interface TimeLeft {
 const weddingDate = new Date('2028-03-18T16:00:00');
 
 export function CountdownSection() {
+	const avesRef = useRef<HTMLDivElement>(null);
+	const avesInView = useInView(avesRef, { once: true, amount: 0.5 });
+	const reducedMotion = useReducedMotion();
 	const [timeLeft, setTimeLeft] = useState<TimeLeft>({
 		days: 0,
 		hours: 0,
@@ -71,18 +74,19 @@ export function CountdownSection() {
 			/>
 
 			<div className="relative z-10 mx-auto flex min-h-[calc(100svh-5rem)] w-full max-w-[315px] flex-col items-center justify-start -mt-5">
-				<motion.img
-					src={avesListon}
-					alt=""
-					loading="lazy"
-					decoding="async"
+				<motion.div
+					ref={avesRef}
 					aria-hidden="true"
-					className=" w-full max-w-[285px] -translate-y-9 select-none"
-					initial={{ opacity: 0, y: 16, scale: 0.98 }}
-					whileInView={{ opacity: 1, y: 0, scale: 1 }}
-					viewport={{ once: true }}
+					className="aspect-square w-full max-w-[285px] -translate-y-9 select-none"
+					initial={reducedMotion ? false : { opacity: 0, y: 16, scale: 0.98 }}
+					animate={reducedMotion || avesInView ? { opacity: 1, y: 0, scale: 1 } : undefined}
 					transition={{ duration: 0.9, ease: 'easeOut' }}
-				/>
+				>
+					{/* Mount once in view so the external SVG's SMIL timeline starts here. */}
+					{(avesInView || reducedMotion) && (
+						<img src={avesListon} alt="" aria-hidden="true" width="2000" height="2000" className="block h-full w-full" />
+					)}
+				</motion.div>
 
 				<motion.p
 					className="font-['Cinzel'] -mt-20 text-[0.75rem] font-medium uppercase leading-[1.95] tracking-[0.14em] text-[#6D6654]"
