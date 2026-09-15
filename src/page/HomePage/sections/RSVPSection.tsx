@@ -1,14 +1,11 @@
 import {Check,Heart,LockKeyhole,MessageCircle,UserRoundPlus,Users,X,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { type FormEvent, useEffect, useState } from 'react';
-import { doc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
+import { RsvpConflictError, RsvpUnavailableError, savePublicRsvp } from '../../../firebase/savePublicRsvp';
 
 import { useInvitation } from '../../../firebase/InvitationContext';
-import { db } from '../../../firebase/firebase';
 import {
-	buildUpdatedGuests,
-	calculateRsvpStatus,
 	getOriginalName,
 	getOriginalShortName,
 	type AttendanceResponse,
@@ -31,9 +28,14 @@ export function RSVPSection() {
 	const [message, setMessage] = useState('');
 	const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+	const baseInvitation = useRef(invitation);
+	const saving = useRef(false);
+	const [saveBlock, setSaveBlock] = useState<'conflict' | 'unavailable' | null>(null);
 
 	useEffect(() => {
 		if (!invitation) return;
+		baseInvitation.current = invitation;
+		setSaveBlock(null);
 
 		setResponses(
 			invitation.guests.map((guest) => {
@@ -249,6 +251,7 @@ export function RSVPSection() {
 		event: FormEvent<HTMLFormElement>,
 	) => {
 		event.preventDefault();
+		if (saving.current || saveBlock) return;
 
 		if (!canEditRsvp) return;
 
@@ -263,40 +266,28 @@ export function RSVPSection() {
 			return;
 		}
 
-		const updatedGuests = buildUpdatedGuests(
-			invitation.guests,
-			invitation.replacementsAllowed,
-			responses,
-			replacementNames,
-			openGuestNames,
-		);
-
-		const rsvpStatus = calculateRsvpStatus(updatedGuests);
-
+		if (saving.current || saveBlock || !baseInvitation.current) return;
+		saving.current = true;
 		try {
 			setSaveStatus('saving');
-
-			const invitationRef = doc(
-				db,
-				'invitations',
-				invitation.id,
-			);
-
-			await updateDoc(invitationRef, {
-				guests: updatedGuests,
-				message: message.trim(),
-				rsvpStatus,
-				updatedAt: serverTimestamp(),
+			const saved = await savePublicRsvp(baseInvitation.current, {
+				responses, replacementNames, openGuestNames, message,
 			});
+			baseInvitation.current = saved;
 
 			setSaveStatus('success');
 		} catch (saveError) {
-			console.error(
-				'❌ Error guardando RSVP:',
-				saveError,
-			);
-
-			setSaveStatus('error');
+			if (saveError instanceof RsvpConflictError) {
+				setSaveBlock('conflict');
+				setSaveStatus('idle');
+			} else if (saveError instanceof RsvpUnavailableError) {
+				setSaveBlock('unavailable');
+				setSaveStatus('idle');
+			} else {
+				setSaveStatus('error');
+			}
+		} finally {
+			saving.current = false;
 		}
 	};
 
@@ -906,9 +897,21 @@ export function RSVPSection() {
 								)}
 							</AnimatePresence>
 
+							{saveBlock && (
+								<div role="alert" className="mt-4 rounded-2xl border border-[#C9A86B]/35 bg-[#F6ECDD] px-4 py-3 text-[0.74rem] leading-5 text-[#765D32]">
+									<p>{saveBlock === 'conflict'
+										? 'La invitación cambió mientras la tenías abierta. Actualiza la información y revisa tus respuestas antes de volver a guardar.'
+										: 'La invitación ya no permite guardar en este momento. Puede haber sido archivada, haber cerrado el plazo o haber cambiado el permiso de acceso.'}</p>
+									<p className="mt-2">Al actualizar se reemplazarán tus cambios sin guardar por la información actual.</p>
+									<button type="button" className="mt-3 underline underline-offset-4" onClick={() => window.location.reload()}>
+										Actualizar invitación
+									</button>
+								</div>
+							)}
+
 							<motion.button
 								type="submit"
-								disabled={saveStatus === 'saving'}
+								disabled={saveStatus === 'saving' || saveBlock !== null}
 								className="mt-5 w-full rounded-full bg-[#7C8B68] px-6 py-3.5 font-['Cinzel'] text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#FFF8EC] shadow-[0_16px_34px_rgba(95,89,71,0.2)] transition hover:bg-[#6F7E5C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
 								whileTap={
 									saveStatus !== 'saving'
