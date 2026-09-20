@@ -1,0 +1,87 @@
+.rsvp-section {
+	padding: 28px 16px;
+	background: #faf8f3;
+	color: #5f5947;
+	font-family: Georgia, 'Times New Roman', serif;
+	font-size: 16px;
+	line-height: 1.4;
+	text-align: center;
+}
+.rsvp-section * { box-sizing: border-box; }
+.rsvp-section p, .rsvp-section h2, .rsvp-section h3 { margin: 0; }
+.rsvp-section button, .rsvp-section input, .rsvp-section textarea { font: inherit; }
+.rsvp-section button { cursor: pointer; }
+.rsvp-section button:disabled { cursor: not-allowed; opacity: .65; }
+.rsvp-section [aria-busy='true'] button:disabled { cursor: wait; }
+.rsvp-section :is(button, input, textarea):focus-visible {
+	outline: 2px solid #6f7563;
+	outline-offset: 3px;
+}
+.rsvp-header h2 { font-family: Allura, cursive; font-size: 50px; font-weight: 400; line-height: 1; color: #a98445; }
+.rsvp-intro { font-size: 14px; font-style: italic; line-height: 1.4; margin-top: 4px !important; }
+.rsvp-ornament { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 8px auto; color: #a98445; }
+.rsvp-ornament span { height: 1px; width: 32px; background: #a9844550; }
+.rsvp-family { font-family: Cinzel, serif; font-size: 15px; font-weight: 600; color: #626c53; overflow-wrap: anywhere; }
+.rsvp-places { font-size: 14px; margin-top: 4px !important; }
+.rsvp-form { margin-top: 14px; }
+.rsvp-fields { border: 0; margin: 0; padding: 0; min-width: 0; }
+.rsvp-surface { background: #fffdf880; border-block: 1px solid #d8cdb9; padding: 0 8px; }
+.rsvp-surface h3 { padding: 10px 0 6px; font-size: 16px; font-weight: 400; color: #626c53; }
+.rsvp-list { list-style: none; margin: 0; padding: 0; }
+.rsvp-row { padding: 6px 0; text-align: left; border-top: 1px solid #d8cdb970; overflow-wrap: anywhere; }
+.rsvp-row-main { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-height: 44px; }
+.rsvp-person { flex: 1 1 135px; min-width: 0; }
+.rsvp-person > p:first-child { font-size: 16px; line-height: 1.35; }
+.rsvp-toggle { display: inline-flex; flex: 0 0 auto; border: 1px solid #b5bba9; border-radius: 12px; background: #fffdf8; }
+.rsvp-toggle button { display: grid; grid-template-columns: 11px 1fr 11px; align-items: center; justify-items: center; width: 48px; min-height: 44px; padding: 7px 1px; border: 0; background: transparent; color: #5f5947; line-height: 1; transition: background-color 150ms, color 150ms; }
+.rsvp-toggle button:first-child { border-radius: 11px 0 0 11px; }
+.rsvp-toggle button:last-child { border-radius: 0 11px 11px 0; box-shadow: -1px 0 0 #b5bba9; }
+.rsvp-toggle button[aria-pressed='true'] { background: #626f52; color: #fff8ec; }
+.rsvp-toggle button:focus-visible { position: relative; z-index: 1; }
+.rsvp-selection { display: grid; place-items: center; width: 11px; height: 11px; }
+@media (hover: hover) {
+	.rsvp-toggle button:not(:disabled):not([aria-pressed='true']):hover { background: #eef1e9; }
+}
+.rsvp-note { font-size: 13px; line-height: 1.4; color: #6d6654; }
+.rsvp-action { min-height: 44px; min-width: 44px; padding: 8px 4px; border: 0; background: transparent; color: #626c53; font-size: 14px !important; text-decoration: underline; text-underline-offset: 3px; text-align: left; }
+.rsvp-row-main > .rsvp-add { flex: 0 0 auto; white-space: nowrap; }
+.rsvp-row-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; }
+.rsvp-action-divider { color: #6d6654; }
+.rsvp-read-status { font-size: 14px; }
+.rsvp-editor { overflow: hidden; }
+.rsvp-editor-content { padding: 8px 4px 6px; font-size: 14px; }
+.rsvp-editor-content label { display: block; margin-bottom: 6px; }
+.rsvp-editor-fields { display: flex; align-items: center; gap: 8px; padding: 4px; }
+.rsvp-editor-fields input { flex: 1; width: 0; min-width: 0; min-height: 44px; padding: 8px 10px; border: 1px solid #c5baa5; border-radius: 12px; background: #fffdf8; color: #5f5947; font-size: 16px; }
+.rsvp-editor-content .rsvp-note { margin-top: 4px; }
+.rsvp-summary { padding: 8px 0; border-bottom: 1px solid #d8cdb9; }
+.rsvp-summary > p:first-child { display: flex; align-items: center; justify-content: center; gap: 6px; color: #626c53; font-size: 15px; font-weight: 600; }
+.rsvp-message { margin-top: 10px; text-align: left; }
+.rsvp-message label { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px; font-size: 17px; }
+.rsvp-message label span { font-family: Cinzel, serif; font-size: 12px; color: #6d6654; text-transform: uppercase; }
+.rsvp-message textarea { display: block; width: 100%; min-height: 64px; margin-top: 6px; padding: 9px 12px; border: 1px solid #d8cdb9; border-radius: 14px; background: #fffdf8; color: #5f5947; font-size: 16px; line-height: 22px; resize: vertical; }
+.rsvp-message textarea::placeholder { color: #766e60; }
+.rsvp-primary { width: 100%; min-height: 50px; padding: 12px; margin-top: 12px; border: 0; border-radius: 26px; background: #626f52; color: #fff8ec; font-family: Cinzel, serif !important; font-size: 14px !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: .04em; }
+.rsvp-save-status { display: flex; align-items: center; justify-content: center; gap: 4px; min-height: 20px; padding-top: 3px; font-size: 13px; color: #626c53; }
+.rsvp-save-status svg { flex-shrink: 0; }
+.rsvp-edit-note { margin-top: 3px !important; line-height: 1.35; }
+.rsvp-alert { padding: 10px 12px; margin-top: 8px; border: 1px solid #a98445; border-left-width: 3px; border-radius: 12px; background: #f0e4cf; color: #654a25; text-align: left; font-size: 14px; }
+.rsvp-alert:focus-visible { outline: 2px solid #76532c; outline-offset: 3px; }
+.rsvp-alert-title { display: flex; align-items: flex-start; gap: 7px; line-height: 1.4; }
+.rsvp-alert-title svg { flex-shrink: 0; margin-top: 1px; }
+.rsvp-alert-body { margin-top: 4px; }
+.rsvp-alert-body p + p { margin-top: 6px; }
+.rsvp-alert-action { display: block; width: 100%; min-height: 44px; margin-top: 10px; padding: 9px 10px; border: 1px solid #76532c; border-radius: 10px; background: #fffdf8; color: #654a25; font-weight: 600 !important; }
+@media (hover: hover) {
+	.rsvp-alert-action:hover { background: #faf8f3; }
+}
+.rsvp-availability { margin-top: 12px !important; font-size: 14px; }
+.rsvp-read-message { margin-top: 12px; overflow-wrap: anywhere; white-space: pre-wrap; }
+@media (max-height: 700px) {
+	.rsvp-section { padding-block: 24px; }
+	.rsvp-form { margin-top: 10px; }
+	.rsvp-ornament { margin-block: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.rsvp-section * { transition: none !important; scroll-behavior: auto; }
+}
