@@ -38,7 +38,9 @@ export function RSVPSection() {
 
 	useEffect(() => {
 		if (!focusTarget) return;
-		document.getElementById(focusTarget)?.focus();
+		const target = document.getElementById(focusTarget);
+		// An opening name editor owns focus once its expansion has completed.
+		if (target?.dataset.focusReady !== 'false') target?.focus();
 		setFocusTarget(null);
 	}, [focusTarget]);
 

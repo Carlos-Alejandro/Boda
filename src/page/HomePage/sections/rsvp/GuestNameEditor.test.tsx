@@ -2,10 +2,12 @@ import { Children, isValidElement, type ReactElement, type ReactNode } from 'rea
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { GuestNameEditor } from './GuestNameEditor';
+import { GuestAttendanceRow } from './GuestAttendanceRow';
 
 type ElementProps = {
 	children?: ReactNode;
 	onClick?: () => void;
+	className?: string;
 	onChange?: (event: { target: { value: string } }) => void;
 };
 
@@ -19,6 +21,34 @@ function findElement(tree: ReactNode, predicate: (element: ReactElement<ElementP
 }
 
 describe('replacement editor cancellation', () => {
+	it('restores through the existing callback and renders the complete original name', () => {
+		const original = 'Cassandra Us Hernandez María Alejandra de los Ángeles';
+		const guest = { name: 'Mariana', originalName: original, shortName: 'Mariana', type: 'replacement' as const, attending: true };
+		const onRestore = vi.fn();
+		const onClear = vi.fn();
+		const onSelect = vi.fn();
+		let tree: ReactNode;
+		function Harness() {
+			tree = GuestAttendanceRow({ id: 'guest', guest, position: 1, response: false, name: 'Mariana',
+				replacementsAllowed: true, editable: true, expanded: false, error: null,
+				onExpand: vi.fn(), onSelect, onName: vi.fn(), onClear, onRestore });
+			return tree;
+		}
+		const html = renderToStaticMarkup(<Harness />);
+		expect(html).toContain('Restaurar invitado original');
+		expect(html).toContain(`En lugar de ${original}</p>`);
+		expect(html.split(original)).toHaveLength(2);
+		expect(html).not.toContain('rsvp-restore-name');
+		expect(html).not.toContain('Retirar reemplazo');
+		const restore = findElement(tree, element => element.props.className === 'rsvp-action rsvp-restore');
+		vi.stubGlobal('requestAnimationFrame', vi.fn());
+		try { restore!.props.onClick!(); } finally { vi.unstubAllGlobals(); }
+		expect(onRestore).toHaveBeenCalledTimes(1);
+		expect(onRestore).toHaveBeenCalledWith();
+		expect(onClear).not.toHaveBeenCalled();
+		expect(onSelect).not.toHaveBeenCalled();
+		expect(guest).toEqual({ name: 'Mariana', originalName: original, shortName: 'Mariana', type: 'replacement', attending: true });
+	});
 	it.each(['Carlitos 2', '  Mariana López  ', ''])('restores the opening draft name %j and closes without submitting', openingName => {
 		const draft = { name: openingName, message: 'Nos vemos', attending: false };
 		const onChange = vi.fn((name: string) => { draft.name = name; });

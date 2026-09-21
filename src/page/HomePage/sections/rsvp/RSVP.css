@@ -47,6 +47,13 @@
 .rsvp-row-main > .rsvp-add { flex: 0 0 auto; white-space: nowrap; }
 .rsvp-row-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; }
 .rsvp-action-divider { color: #6d6654; }
+.rsvp-restore { font-size: 13px !important; text-decoration: none; padding-block: 4px; max-width: 100%; }
+.rsvp-restore-label { display: flex; align-items: center; gap: 4px; }
+.rsvp-restore-label svg { flex-shrink: 0; }
+.rsvp-replacement-status { color: #626c53; }
+.rsvp-replacement-actions { align-items: flex-start; }
+.rsvp-replacement-actions .rsvp-action { padding-top: 4px; padding-bottom: 12px; }
+.rsvp-replacement-actions .rsvp-action-divider { padding-top: 4px; }
 .rsvp-read-status { font-size: 14px; }
 .rsvp-editor { overflow: hidden; }
 .rsvp-editor-content { padding: 8px 4px 6px; font-size: 14px; }

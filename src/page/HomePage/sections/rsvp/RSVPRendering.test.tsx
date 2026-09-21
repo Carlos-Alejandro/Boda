@@ -82,11 +82,11 @@ describe('RSVP server rendering (no DOM environment required)', () => {
 		expect(html).toContain('role="alert"');
 		expect(html).toContain('<strong>Revisa el nombre</strong>');
 	});
-	it('shows a replacement in its slot with explicit restore and removal actions', () => {
+	it('shows a replacement in its slot with edit and restore actions', () => {
 		const html = row({ response: false, name: 'Mariana López' });
 		expect(html).toContain('En lugar de Carlos Pérez');
-		expect(html).toContain('Restaurar a Carlos Pérez como asistente');
-		expect(html).toContain('Retirar reemplazo');
+		expect(html).toContain('Restaurar invitado original');
+		expect(html).not.toContain('Retirar reemplazo');
 		expect(html).not.toContain('aria-pressed');
 	});
 	it.each([1, 3])('numbers open places only when the invitation has multiple open slots (%i)', count => {
@@ -99,24 +99,48 @@ describe('RSVP server rendering (no DOM environment required)', () => {
 			expect(html).not.toContain('Lugar disponible 1');
 		} else for (let i = 1; i <= count; i++) expect(html).toContain(`Lugar disponible ${i}`);
 	});
-	it('keeps the replacement editor compact with explicit restore and removal actions', () => {
+	it('keeps the replacement editor compact with edit and restore actions', () => {
 		const html = row({ response: false, name: 'Carlitos 2', expanded: true });
 		expect(html).toContain('Editar reemplazo');
 		expect(html).toContain('value="Carlitos 2"');
 		expect(html).toContain('Listo');
 		expect(html).toContain('Cancelar');
 		expect(html).toContain('En lugar de Carlos Pérez');
-		expect(html).toContain('Restaurar a Carlos Pérez como asistente');
-		expect(html).toContain('Retirar reemplazo');
+		expect(html).toContain('Restaurar invitado original');
+		expect(html).not.toContain('Retirar reemplazo');
 		expect(html).not.toContain('será utilizado por');
 		expect(html).not.toContain('Al agregar su nombre');
 		expect(html).not.toContain('Carlos Pérez sí asistirá');
 		expect(html.match(/✓ Asistirá/g)).toHaveLength(1);
 	});
+	it('keeps replacement identity once and both actions in the same group', () => {
+		const html = row({ response: false, name: 'Mariana López' });
+		expect(html).toContain('id="guest-name">Mariana López</p>');
+		expect(html).toContain('class="rsvp-note rsvp-replacement-status">✓ Asistirá</p>');
+		const actions = html.slice(html.indexOf('class="rsvp-row-actions'), html.indexOf('<div id="guest-editor">'));
+		expect(actions).toContain('>Editar</button>');
+		expect(actions).toContain('Restaurar invitado original');
+		expect(actions).toContain('lucide-undo-2');
+		expect(actions).not.toContain('Carlos Pérez');
+		expect(actions.match(/<button/g)).toHaveLength(2);
+		expect(html.split('Carlos Pérez')).toHaveLength(2);
+	});
+	it('keeps replacement-only presentation out of known and open rows', () => {
+		for (const html of [row(), row({ guest: open }), row({ guest: open, name: 'Mariana' })]) {
+			expect(html).not.toContain('rsvp-replacement-actions');
+			expect(html).not.toContain('rsvp-replacement-status');
+			expect(html).not.toContain('Restaurar invitado original');
+		}
+		expect(row({ guest: open, name: 'Mariana' })).toContain('Dejar libre');
+	});
 	it('warns about a saved replacement when replacements have been disabled', () => {
 		const html = row({ response: false, name: 'Mariana', replacementsAllowed: false });
 		expect(html).toContain('Al confirmar, este lugar quedará sin utilizar');
 		expect(html).not.toContain('>Editar<');
+		expect(html).not.toContain('Retirar reemplazo');
+		expect(html).toContain('id="guest-clear"');
+		expect(html).toContain('aria-describedby="guest-unavailable"');
+		expect(html).toContain('Restaurar invitado original');
 	});
 	it('renders deadline read-only and permits an active exceptional editing period', () => {
 		vi.useFakeTimers();
