@@ -8,7 +8,8 @@
     "dev:phone": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "test": "vitest run",
+    "test": "vitest run --exclude rules-tests/**",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-boda \"vitest run rules-tests/firestore.rules.test.ts\"",
     "preview": "vite preview",
     "tunnel": "npm run build && vite preview --host 0.0.0.0 --port 5173"
   },
@@ -24,10 +25,12 @@
     "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
+    "firebase-tools": "^15.31.0",
     "oxlint": "^1.69.0",
     "typescript": "~6.0.2",
     "vite": "^8.1.0",

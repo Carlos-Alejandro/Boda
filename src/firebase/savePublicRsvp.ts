@@ -1,9 +1,12 @@
-import { doc, runTransaction, serverTimestamp } from 'firebase/firestore';
-import { db } from './firebase';
+import { Timestamp } from 'firebase/firestore';
+
 import type { Invitation } from './InvitationContext';
 import { parseInvitation } from './validateInvitation';
-import { getRsvpAvailability } from './rsvpAvailability';
-import { buildUpdatedGuests, calculateRsvpStatus, type AttendanceResponse } from '../page/HomePage/sections/rsvpLogic';
+import type { AttendanceResponse } from '../page/HomePage/sections/rsvpLogic';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+if (!API_BASE_URL) throw new Error('Falta la variable VITE_API_BASE_URL.');
 
 export class RsvpConflictError extends Error {}
 export class RsvpUnavailableError extends Error {}
@@ -15,8 +18,6 @@ export interface RsvpDraft {
 	message: string;
 }
 
-// Compare form inputs, not updatedAt (a server write marker).
-// displayName and unknown document metadata neither drive nor get overwritten by RSVP.
 function formBase(invitation: Invitation) {
 	return JSON.stringify({
 		id: invitation.id, maxGuests: invitation.maxGuests,
@@ -30,36 +31,59 @@ function formBase(invitation: Invitation) {
 	});
 }
 
-export async function savePublicRsvp(base: Invitation, draft: RsvpDraft): Promise<Invitation> {
-	const expected = formBase(base);
-	// Snapshot inputs across retries; the callback has no React side effects.
-	const submitted = {
-		responses: [...draft.responses], replacementNames: [...draft.replacementNames],
-		openGuestNames: [...draft.openGuestNames], message: draft.message.trim(),
-	};
-	const reference = doc(db, 'invitations', base.id);
-	try {
-		return await runTransaction(db, async (transaction) => {
-			const snapshot = await transaction.get(reference);
-			if (!snapshot.exists()) throw new RsvpUnavailableError();
-			const current = parseInvitation(snapshot.id, snapshot.data());
-			if (!current) throw new Error('Invalid invitation document');
-			if (!getRsvpAvailability(current, new Date()).canEditRsvp) throw new RsvpUnavailableError();
-			if (formBase(current) !== expected) throw new RsvpConflictError();
-			const guests = buildUpdatedGuests(current.guests, current.replacementsAllowed,
-				submitted.responses, submitted.replacementNames, submitted.openGuestNames);
-			const rsvpStatus = calculateRsvpStatus(guests);
-			transaction.update(reference, {
-				guests, message: submitted.message, rsvpStatus, updatedAt: serverTimestamp(),
-			});
-			// Returned only after commit, never from a potentially newer post-commit read.
-			// updatedAt is excluded from comparison, so no extra read is necessary.
-			return { ...current, guests, message: submitted.message, rsvpStatus };
-		});
-	} catch (error) {
-		// Rules deny reads of archived documents too; permission-denied does not prove archive.
-		if (typeof error === 'object' && error !== null && 'code' in error &&
-			error.code === 'permission-denied') throw new RsvpUnavailableError();
-		throw error;
+function apiDate(value: unknown): Timestamp | null | undefined {
+	if (value === null) return null;
+	if (typeof value !== 'string') return undefined;
+	const date = new Date(value);
+	return Number.isNaN(date.getTime()) ? undefined : Timestamp.fromDate(date);
+}
+
+function parseApiInvitation(value: unknown): Invitation {
+	if (typeof value !== 'object' || value === null || Array.isArray(value) || !('id' in value) || typeof value.id !== 'string') {
+		throw new Error('Invalid RSVP response');
 	}
+	const data = value as Record<string, unknown>;
+	const invitation = parseInvitation(value.id, {
+		...data,
+		archivedAt: apiDate(data.archivedAt),
+		editOverrideUntil: apiDate(data.editOverrideUntil),
+	});
+	if (!invitation) throw new Error('Invalid RSVP response');
+	return invitation;
+}
+
+async function errorCode(response: Response): Promise<string | null> {
+	try {
+		const payload: unknown = await response.json();
+		if (typeof payload !== 'object' || payload === null || !('error' in payload)) return null;
+		const error = payload.error;
+		return typeof error === 'object' && error !== null && 'code' in error && typeof error.code === 'string'
+			? error.code
+			: null;
+	} catch {
+		return null;
+	}
+}
+
+export async function savePublicRsvp(base: Invitation, draft: RsvpDraft): Promise<Invitation> {
+	const response = await fetch(`${API_BASE_URL}/api/public/invitations/${encodeURIComponent(base.id)}/rsvp`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			expectedState: formBase(base),
+			responses: [...draft.responses],
+			replacementNames: [...draft.replacementNames],
+			openGuestNames: [...draft.openGuestNames],
+			message: draft.message,
+		}),
+	});
+
+	if (!response.ok) {
+		const code = await errorCode(response);
+		if (code === 'RSVP_CONFLICT') throw new RsvpConflictError();
+		if (code === 'RSVP_UNAVAILABLE') throw new RsvpUnavailableError();
+		throw new Error(`RSVP API failed with status ${response.status}`);
+	}
+
+	return parseApiInvitation(await response.json());
 }
