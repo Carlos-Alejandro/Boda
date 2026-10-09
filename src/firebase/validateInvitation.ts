@@ -161,7 +161,10 @@ export function parseInvitation(
 	if (editOverrideUntil instanceof Timestamp) {
 		parsedEditOverrideUntil =
 			editOverrideUntil.toDate();
-	} else if (editOverrideUntil !== null) {
+	} else if (
+		editOverrideUntil !== null &&
+		editOverrideUntil !== undefined
+	) {
 		return null;
 	}
 
