@@ -3,6 +3,7 @@ import type { Guest } from '../../../firebase/InvitationContext';
 export type AttendanceResponse = boolean | null;
 
 export type CalculatedRsvpStatus =
+	| 'pending'
 	| 'confirmed'
 	| 'partial'
 	| 'declined';
@@ -100,6 +101,7 @@ export function buildUpdatedGuests(
 
 export function calculateRsvpStatus(
 	guests: Guest[],
+	declineAll = false,
 ): CalculatedRsvpStatus {
 	const attendingCount = guests.filter(
 		(guest) => guest.attending === true,
@@ -112,7 +114,10 @@ export function calculateRsvpStatus(
 	).length;
 
 	if (attendingCount === 0) {
-		return 'declined';
+		return declineAll || guests.some((guest) =>
+			guest.attending === false &&
+			(guest.type !== 'open' || guest.name.trim() !== ''),
+		) ? 'declined' : 'pending';
 	}
 
 	if (declinedKnownCount > 0) {

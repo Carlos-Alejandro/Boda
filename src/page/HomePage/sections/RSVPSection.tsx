@@ -1,8 +1,8 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { useInvitation } from '../../../firebase/InvitationContext';
 import { getRsvpAvailability } from '../../../firebase/rsvpAvailability';
-import { RsvpConflictError, RsvpUnavailableError, savePublicRsvp, type RsvpDraft } from '../../../firebase/savePublicRsvp';
-import { createRsvpDraft, inspectRsvpDraft } from './rsvp/rsvpDraft';
+import { RsvpConflictError, RsvpEmptyResponseError, RsvpUnavailableError, savePublicRsvp, type RsvpDraft } from '../../../firebase/savePublicRsvp';
+import { createRsvpDraft, hasAmbiguousEmptyRsvp, inspectRsvpDraft } from './rsvp/rsvpDraft';
 import { RSVPHeader } from './rsvp/RSVPHeader';
 import { GuestAttendanceRow } from './rsvp/GuestAttendanceRow';
 import { AttendanceSummary } from './rsvp/AttendanceSummary';
@@ -60,6 +60,30 @@ export function RSVPSection() {
 		setDraft(change);
 		setStatus('idle');
 	};
+	const saveDraft = async (submittedDraft: RsvpDraft, declineAll = false) => {
+		if (saving.current || block || !canEditRsvp) return;
+		saving.current = true;
+		setStatus('saving');
+		const submittedSource = source.current;
+		try {
+			const saved = await savePublicRsvp(base, submittedDraft, declineAll);
+			if (source.current !== submittedSource) return;
+			setBase(saved);
+			setDraft(createRsvpDraft(saved));
+			setEditors(new Set());
+			setAttempted(false);
+			setStatus(declineAll ? 'declined' : 'success');
+		} catch (saveError) {
+			if (source.current !== submittedSource) return;
+			if (saveError instanceof RsvpConflictError || saveError instanceof RsvpUnavailableError) {
+				setBlock(saveError instanceof RsvpConflictError ? 'conflict' : 'unavailable');
+				setStatus('idle');
+			} else if (saveError instanceof RsvpEmptyResponseError) setStatus('empty');
+			else setStatus('error');
+		} finally {
+			saving.current = false;
+		}
+	};
 	const expand = (index: number, open: boolean) => {
 		if (saving.current || !canEditRsvp) return;
 		setEditors(current => {
@@ -98,33 +122,26 @@ export function RSVPSection() {
 			setFocusTarget(`${id}-guest-${firstError}-${unavailableReplacement ? 'clear' : nameError ? 'input' : 'answer'}`);
 			return;
 		}
-		saving.current = true;
-		setStatus('saving');
-		const submittedSource = source.current;
-		try {
-			const saved = await savePublicRsvp(base, draft);
-			// Only the committed result becomes our next base. Never reload or merge remotely.
-			if (source.current !== submittedSource) return;
-			setBase(saved);
-			setDraft(createRsvpDraft(saved));
-			setEditors(new Set());
-			setAttempted(false);
-			setStatus('success');
-		} catch (saveError) {
-			if (source.current !== submittedSource) return;
-			if (saveError instanceof RsvpConflictError || saveError instanceof RsvpUnavailableError) {
-				setBlock(saveError instanceof RsvpConflictError ? 'conflict' : 'unavailable');
-				setStatus('idle');
-			} else setStatus('error');
-		} finally {
-			saving.current = false;
+		if (hasAmbiguousEmptyRsvp(base, draft)) {
+			setStatus('empty');
+			return;
 		}
+		await saveDraft(draft);
+	};
+	const declineAll = () => {
+		if (!base.guests.length || !base.guests.every(guest => guest.type === 'open')) return;
+		void saveDraft({
+			...draft,
+			responses: draft.responses.map(() => null),
+			openGuestNames: draft.openGuestNames.map(() => ''),
+		}, true);
 	};
 	// A save-time closure must not replace the visible, unsaved inputs with the old base.
 	const showDraft = canEditRsvp || block !== null;
 	const attending = showDraft ? inspection.attending : base.guests.filter(guest => guest.attending === true).length;
 	let openPosition = 0;
 	const openCount = base.guests.filter(guest => guest.type === 'open').length;
+	const declineAllAvailable = base.guests.length > 0 && base.guests.every(guest => guest.type === 'open');
 
 	return <section className="rsvp-section" aria-labelledby={`${id}-title`}>
 		<RSVPHeader invitation={base} id={`${id}-title`} />
@@ -158,7 +175,8 @@ export function RSVPSection() {
 					: base.message.trim() && <div className="rsvp-read-message"><p>Tu mensaje</p><p>“{base.message}”</p></div>}
 			</fieldset>
 			<RSVPSubmitFeedback status={status} block={block} alreadySaved={base.rsvpStatus !== 'pending'} editable={canEditRsvp}
-				validationError={attempted && canEditRsvp && inspection.errors.some(value => value !== null)} />
+				validationError={attempted && canEditRsvp && inspection.errors.some(value => value !== null)}
+				declineAllAvailable={declineAllAvailable} onDeclineAll={declineAll} />
 			{!showDraft && <p className="rsvp-note">Esta información corresponde a la última respuesta registrada.</p>}
 		</form>
 	</section>;

@@ -35,3 +35,12 @@ export function inspectRsvpDraft(invitation: Invitation, draft: RsvpDraft) {
 	});
 	return { attending, unanswered, errors };
 }
+
+export function hasAmbiguousEmptyRsvp(invitation: Invitation, draft: RsvpDraft) {
+	const inspection = inspectRsvpDraft(invitation, draft);
+	if (inspection.attending > 0) return false;
+
+	return !invitation.guests.some((guest, index) =>
+		guest.type !== 'open' && draft.responses[index] === false,
+	);
+}

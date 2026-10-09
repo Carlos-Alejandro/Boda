@@ -10,6 +10,7 @@ if (!API_BASE_URL) throw new Error('Falta la variable VITE_API_BASE_URL.');
 
 export class RsvpConflictError extends Error {}
 export class RsvpUnavailableError extends Error {}
+export class RsvpEmptyResponseError extends Error {}
 
 export interface RsvpDraft {
 	responses: AttendanceResponse[];
@@ -65,7 +66,7 @@ async function errorCode(response: Response): Promise<string | null> {
 	}
 }
 
-export async function savePublicRsvp(base: Invitation, draft: RsvpDraft): Promise<Invitation> {
+export async function savePublicRsvp(base: Invitation, draft: RsvpDraft, declineAll = false): Promise<Invitation> {
 	const response = await fetch(`${API_BASE_URL}/api/public/invitations/${encodeURIComponent(base.id)}/rsvp`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
@@ -75,6 +76,7 @@ export async function savePublicRsvp(base: Invitation, draft: RsvpDraft): Promis
 			replacementNames: [...draft.replacementNames],
 			openGuestNames: [...draft.openGuestNames],
 			message: draft.message,
+			...(declineAll ? { declineAll: true } : {}),
 		}),
 	});
 
@@ -82,6 +84,7 @@ export async function savePublicRsvp(base: Invitation, draft: RsvpDraft): Promis
 		const code = await errorCode(response);
 		if (code === 'RSVP_CONFLICT') throw new RsvpConflictError();
 		if (code === 'RSVP_UNAVAILABLE') throw new RsvpUnavailableError();
+		if (code === 'RSVP_EMPTY') throw new RsvpEmptyResponseError();
 		throw new Error(`RSVP API failed with status ${response.status}`);
 	}
 

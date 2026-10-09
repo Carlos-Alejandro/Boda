@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Invitation } from './InvitationContext';
-import { RsvpConflictError, RsvpUnavailableError, savePublicRsvp, type RsvpDraft } from './savePublicRsvp';
+import { RsvpConflictError, RsvpEmptyResponseError, RsvpUnavailableError, savePublicRsvp, type RsvpDraft } from './savePublicRsvp';
 
 vi.hoisted(() => vi.stubEnv('VITE_API_BASE_URL', 'https://api.test'));
 
@@ -73,9 +73,18 @@ describe('savePublicRsvp through Boda-API', () => {
 		expect(submitted.replacementNames[0]).toBe('Mariana López');
 	});
 
+	it('sends declineAll only for an explicit decline action', async () => {
+		const current = base();
+		await savePublicRsvp(current, draft(), true);
+		const [, options] = vi.mocked(fetch).mock.calls[0];
+		const body = JSON.parse(options?.body as string);
+		expect(body.declineAll).toBe(true);
+	});
+
 	it.each([
 		['RSVP_CONFLICT', RsvpConflictError],
 		['RSVP_UNAVAILABLE', RsvpUnavailableError],
+		['RSVP_EMPTY', RsvpEmptyResponseError],
 	] as const)('maps %s without discarding the caller draft', async (code, ErrorType) => {
 		vi.mocked(fetch).mockResolvedValueOnce(new Response(JSON.stringify({ error: { code, message: 'safe' } }), { status: 409 }));
 		const submitted = draft();

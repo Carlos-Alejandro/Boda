@@ -44,6 +44,8 @@
 }
 .rsvp-note { font-size: 13px; line-height: 1.4; color: #6d6654; }
 .rsvp-action { min-height: 44px; min-width: 44px; padding: 8px 4px; border: 0; background: transparent; color: #626c53; font-size: 14px !important; text-decoration: underline; text-underline-offset: 3px; text-align: left; }
+.rsvp-decline { display: block; width: 100%; margin-top: 8px; border: 1px solid #8a4c3e; border-radius: 22px; color: #8a4c3e; font-weight: 600 !important; text-align: center; }
+.rsvp-decline:disabled { opacity: .6; }
 .rsvp-row-main > .rsvp-add { flex: 0 0 auto; white-space: nowrap; }
 .rsvp-row-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; }
 .rsvp-action-divider { color: #6d6654; }

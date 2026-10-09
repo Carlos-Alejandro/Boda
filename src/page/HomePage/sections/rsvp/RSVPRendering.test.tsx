@@ -8,7 +8,7 @@ import { AttendanceSummary } from './AttendanceSummary';
 
 const context = vi.hoisted(() => ({ invitation: null as Invitation | null, loading: false, error: false }));
 vi.mock('../../../../firebase/InvitationContext', () => ({ useInvitation: () => context }));
-vi.mock('../../../../firebase/savePublicRsvp', () => ({ savePublicRsvp: vi.fn(), RsvpConflictError: class extends Error {}, RsvpUnavailableError: class extends Error {} }));
+vi.mock('../../../../firebase/savePublicRsvp', () => ({ savePublicRsvp: vi.fn(), RsvpConflictError: class extends Error {}, RsvpEmptyResponseError: class extends Error {}, RsvpUnavailableError: class extends Error {} }));
 const known: Guest = { name: 'Carlos Pérez', shortName: 'Carlos', type: 'known', attending: null };
 const open: Guest = { name: '', shortName: 'Acompañante', type: 'open', attending: null };
 function invitation(guests: Guest[]): Invitation {
@@ -35,6 +35,19 @@ describe('RSVP server rendering (no DOM environment required)', () => {
 		expect(html).toContain(`Invitado ${count - 1} Apellido completo`);
 		expect(html).not.toContain('min-h-svh');
 		expect(html).toMatch(/maxlength="500"/i);
+		expect(html).not.toContain('Nadie asistirá');
+	});
+	it('offers an explicit decline only for invitations made of open slots', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2027-01-01'));
+		context.invitation = invitation([{ ...open }, { ...open }]);
+		const html = renderToStaticMarkup(<RSVPSection />);
+		expect(html).toContain('Nadie asistirá');
+		expect(html).toContain('Elige esta opción si nadie de la invitación asistirá.');
+	});
+	it('hides the global decline action when named invitees are present', () => {
+		context.invitation = invitation([known, { ...open }]);
+		expect(renderToStaticMarkup(<RSVPSection />)).not.toContain('Nadie asistirá');
 	});
 	it.each([true, false, null])('keeps the toggle accessible and marks response %s beyond color', response => {
 		const html = row({ response });

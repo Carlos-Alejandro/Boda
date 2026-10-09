@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Guest, Invitation } from '../../../../firebase/InvitationContext';
 import { buildUpdatedGuests, calculateRsvpStatus } from '../rsvpLogic';
-import { createRsvpDraft, inspectRsvpDraft } from './rsvpDraft';
+import { createRsvpDraft, hasAmbiguousEmptyRsvp, inspectRsvpDraft } from './rsvpDraft';
 
 const known: Guest = { name: 'Carlos Pérez', shortName: 'Carlos', type: 'known', attending: null };
 const open: Guest = { name: '', shortName: 'Acompañante', type: 'open', attending: null };
@@ -12,6 +12,18 @@ function fixture(guests: Guest[], replacementsAllowed = true): Invitation {
 }
 
 describe('RSVP draft validation and attendance preview', () => {
+	it('does not submit an empty open-only form, but accepts explicit known declines', () => {
+		const openOnly = fixture([open]);
+		const openDraft = createRsvpDraft(openOnly);
+		expect(hasAmbiguousEmptyRsvp(openOnly, openDraft)).toBe(true);
+		openDraft.openGuestNames[0] = 'Ana López';
+		expect(hasAmbiguousEmptyRsvp(openOnly, openDraft)).toBe(false);
+
+		const knownOnly = fixture([known]);
+		const knownDraft = createRsvpDraft(knownOnly);
+		knownDraft.responses[0] = false;
+		expect(hasAmbiguousEmptyRsvp(knownOnly, knownDraft)).toBe(false);
+	});
 	it.each([1, 2, 4, 6, 12, 30])('preserves all %i slots and flags unanswered known guests', count => {
 		const invitation = fixture(Array.from({ length: count }, (_, index) => ({ ...known, name: `Persona ${index}` })));
 		const draft = createRsvpDraft(invitation);

@@ -51,6 +51,16 @@ describe('calculateRsvpStatus', () => {
 
 		expect(calculateRsvpStatus(guests)).toBe('declined');
 	});
+
+	it('no trata lugares abiertos sin nombre como rechazos', () => {
+		const guests: Guest[] = [
+			{ name: '', shortName: 'Acompañante', type: 'open', attending: false },
+			{ name: '', shortName: 'Acompañante', type: 'open', attending: false },
+		];
+
+		expect(calculateRsvpStatus(guests)).toBe('pending');
+		expect(calculateRsvpStatus(guests, true)).toBe('declined');
+	});
 });
 
 describe('buildUpdatedGuests', () => {
