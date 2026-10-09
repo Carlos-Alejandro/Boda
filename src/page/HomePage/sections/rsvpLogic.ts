@@ -65,6 +65,15 @@ export function buildUpdatedGuests(
 		const originalShortName =
 			getOriginalShortName(guest);
 
+		if (guest.type === 'replacement' && response === null && !replacementName) {
+			return {
+				name: originalName,
+				shortName: originalShortName,
+				type: 'known' as const,
+				attending: null,
+			};
+		}
+
 		if (response === true) {
 			return {
 				name: originalName,

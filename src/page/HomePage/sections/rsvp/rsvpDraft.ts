@@ -11,6 +11,24 @@ export function createRsvpDraft(invitation: Invitation): RsvpDraft {
 	};
 }
 
+export function restoreReplacementDraft(draft: RsvpDraft, index: number): RsvpDraft {
+	return {
+		...draft,
+		responses: draft.responses.map((response, i) => i === index ? null : response),
+		replacementNames: draft.replacementNames.map((name, i) => i === index ? '' : name),
+	};
+}
+
+export type SuccessfulRsvpStatus = 'success' | 'declined' | 'restored';
+
+export function getSuccessfulRsvpStatus(invitation: Invitation, draft: RsvpDraft, declineAll = false): SuccessfulRsvpStatus {
+	if (declineAll) return 'declined';
+	const restoredReplacement = invitation.guests.some((guest, index) =>
+		guest.type === 'replacement' && draft.responses[index] === null && !(draft.replacementNames[index] ?? '').trim(),
+	);
+	return restoredReplacement ? 'restored' : 'success';
+}
+
 // UI validation only. Persisted transformations remain in rsvpLogic.
 export const isValidGuestName = (name: string) => name.trim().length >= 2;
 export type GuestError = 'response' | 'name' | null;
@@ -28,6 +46,7 @@ export function inspectRsvpDraft(invitation: Invitation, draft: RsvpDraft) {
 		const name = draft.replacementNames[index] ?? '';
 		if (response === true || (response === false && invitation.replacementsAllowed && isValidGuestName(name))) attending++;
 		if (response === null) {
+			if (guest.type === 'replacement' && !name.trim()) return null;
 			unanswered++;
 			return 'response';
 		}
@@ -41,6 +60,7 @@ export function hasAmbiguousEmptyRsvp(invitation: Invitation, draft: RsvpDraft) 
 	if (inspection.attending > 0) return false;
 
 	return !invitation.guests.some((guest, index) =>
-		guest.type !== 'open' && draft.responses[index] === false,
+		(guest.type !== 'open' && draft.responses[index] === false) ||
+		(guest.type === 'replacement' && draft.responses[index] === null && !(draft.replacementNames[index] ?? '').trim()),
 	);
 }

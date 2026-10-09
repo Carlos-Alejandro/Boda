@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { useInvitation } from '../../../firebase/InvitationContext';
 import { getRsvpAvailability } from '../../../firebase/rsvpAvailability';
 import { RsvpConflictError, RsvpEmptyResponseError, RsvpUnavailableError, savePublicRsvp, type RsvpDraft } from '../../../firebase/savePublicRsvp';
-import { createRsvpDraft, hasAmbiguousEmptyRsvp, inspectRsvpDraft } from './rsvp/rsvpDraft';
+import { createRsvpDraft, getSuccessfulRsvpStatus, hasAmbiguousEmptyRsvp, inspectRsvpDraft, restoreReplacementDraft } from './rsvp/rsvpDraft';
 import { RSVPHeader } from './rsvp/RSVPHeader';
 import { GuestAttendanceRow } from './rsvp/GuestAttendanceRow';
 import { AttendanceSummary } from './rsvp/AttendanceSummary';
@@ -72,7 +72,7 @@ export function RSVPSection() {
 			setDraft(createRsvpDraft(saved));
 			setEditors(new Set());
 			setAttempted(false);
-			setStatus(declineAll ? 'declined' : 'success');
+			setStatus(getSuccessfulRsvpStatus(base, submittedDraft, declineAll));
 		} catch (saveError) {
 			if (source.current !== submittedSource) return;
 			if (saveError instanceof RsvpConflictError || saveError instanceof RsvpUnavailableError) {
@@ -99,6 +99,10 @@ export function RSVPSection() {
 			replacementNames: current.replacementNames.map((name, i) => i === index && value ? '' : name),
 		}));
 		if (value) expand(index, false);
+	};
+	const restore = (index: number) => {
+		changeDraft(current => restoreReplacementDraft(current, index));
+		expand(index, false);
 	};
 	const updateName = (index: number, value: string) => {
 		const open = base.guests[index].type === 'open';
@@ -165,7 +169,7 @@ export function RSVPSection() {
 								onExpand={open => expand(index, open)} onSelect={value => select(index, value)}
 								onName={value => updateName(index, value)}
 								onClear={() => { updateName(index, ''); expand(index, false); }}
-								onRestore={() => select(index, true)} />;
+								onRestore={() => restore(index)} />;
 						})}
 					</ul>
 				</div>

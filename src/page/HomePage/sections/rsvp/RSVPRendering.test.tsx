@@ -192,6 +192,11 @@ describe('RSVP server rendering (no DOM environment required)', () => {
 		expect(success).toContain('lucide-check');
 		expect(success).not.toContain('role="alert"');
 		expect(success).toContain('Actualizar asistencia');
+		const restored = renderToStaticMarkup(<RSVPSubmitFeedback status="restored" block={null} alreadySaved editable />);
+		expect(restored).toContain('Se restauró al invitado original. Su asistencia quedó pendiente de confirmación.');
+		expect(restored).toContain('role="status"');
+		expect(restored).toContain('Actualizar asistencia');
+		expect(restored).not.toContain('Tu respuesta se guardó correctamente.');
 	});
 	it.each([
 		[1, 2, 1, '1 de 2 asistirá', 'Falta responder por 1 persona'],

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Guest, Invitation } from '../../../../firebase/InvitationContext';
 import { buildUpdatedGuests, calculateRsvpStatus } from '../rsvpLogic';
-import { createRsvpDraft, hasAmbiguousEmptyRsvp, inspectRsvpDraft } from './rsvpDraft';
+import { createRsvpDraft, getSuccessfulRsvpStatus, hasAmbiguousEmptyRsvp, inspectRsvpDraft, restoreReplacementDraft } from './rsvpDraft';
 
 const known: Guest = { name: 'Carlos Pérez', shortName: 'Carlos', type: 'known', attending: null };
 const open: Guest = { name: '', shortName: 'Acompañante', type: 'open', attending: null };
@@ -75,6 +75,25 @@ describe('RSVP draft validation and attendance preview', () => {
 		expect(buildUpdatedGuests(invitation.guests, true, draft.responses, draft.replacementNames, draft.openGuestNames)).toEqual([{ ...known, attending: false }]);
 		draft.responses[0] = true;
 		expect(buildUpdatedGuests(invitation.guests, true, draft.responses, draft.replacementNames, draft.openGuestNames)).toEqual([{ ...known, attending: true }]);
+	});
+	it('restores a replacement as unanswered and permits saving the restoration', () => {
+		const invitation = fixture([replacement]);
+		const draft = restoreReplacementDraft(createRsvpDraft(invitation), 0);
+
+		expect(inspectRsvpDraft(invitation, draft)).toEqual({ attending: 0, unanswered: 0, errors: [null] });
+		expect(hasAmbiguousEmptyRsvp(invitation, draft)).toBe(false);
+		const guests = buildUpdatedGuests(invitation.guests, true, draft.responses, draft.replacementNames, draft.openGuestNames);
+		expect(guests).toEqual([{ ...known, attending: null }]);
+		expect(calculateRsvpStatus(guests)).toBe('pending');
+		expect(getSuccessfulRsvpStatus(invitation, draft)).toBe('restored');
+	});
+	it('keeps ordinary response success and explicit decline messages distinct from restoration', () => {
+		const invitation = fixture([replacement]);
+		const confirmedDraft = createRsvpDraft(invitation);
+		confirmedDraft.responses[0] = true;
+		confirmedDraft.replacementNames[0] = '';
+		expect(getSuccessfulRsvpStatus(invitation, confirmedDraft)).toBe('success');
+		expect(getSuccessfulRsvpStatus(invitation, createRsvpDraft(invitation), true)).toBe('declined');
 	});
 	it('reinitializes from committed data without mutating the invitation', () => {
 		const invitation = fixture([known, open]);

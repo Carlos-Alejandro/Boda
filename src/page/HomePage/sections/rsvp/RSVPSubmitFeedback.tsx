@@ -1,7 +1,7 @@
 import { Check } from 'lucide-react';
 import { RSVPAlert } from './RSVPAlert';
 
-export type SaveStatus = 'idle' | 'saving' | 'success' | 'declined' | 'empty' | 'error';
+export type SaveStatus = 'idle' | 'saving' | 'success' | 'declined' | 'restored' | 'empty' | 'error';
 export type SaveBlock = 'conflict' | 'unavailable' | null;
 
 export function RSVPSubmitFeedback({ status, block, alreadySaved, editable, validationError = false, declineAllAvailable = false, onDeclineAll }: {
@@ -19,8 +19,8 @@ export function RSVPSubmitFeedback({ status, block, alreadySaved, editable, vali
 			<p className="rsvp-note">Elige esta opción si nadie de la invitación asistirá.</p>
 		</>}
 		<p className="rsvp-save-status" role="status" aria-live="polite">
-			{(status === 'success' || status === 'declined') && <Check size={15} aria-hidden="true" />}
-			{status === 'saving' ? 'Estamos guardando tu respuesta…' : status === 'success' ? 'Tu respuesta se guardó correctamente.' : status === 'declined' ? 'Se registró que nadie asistirá.' : ''}
+			{(status === 'success' || status === 'declined' || status === 'restored') && <Check size={15} aria-hidden="true" />}
+			{status === 'saving' ? 'Estamos guardando tu respuesta…' : status === 'success' ? 'Tu respuesta se guardó correctamente.' : status === 'declined' ? 'Se registró que nadie asistirá.' : status === 'restored' ? 'Se restauró al invitado original. Su asistencia quedó pendiente de confirmación.' : ''}
 		</p>
 		{status === 'empty' && <RSVPAlert title="Indica tu respuesta">
 			<p>Agrega el nombre de al menos una persona o elige «Nadie asistirá».</p>
