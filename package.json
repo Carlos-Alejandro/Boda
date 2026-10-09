@@ -8,7 +8,8 @@
     "dev:phone": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "test": "vitest run --exclude rules-tests/**",
+    "test": "vitest run --exclude rules-tests/** --exclude scripts/e2e/**",
+    "test:e2e": "playwright test --config scripts/e2e/playwright.config.mjs",
     "test:rules": "firebase emulators:exec --only firestore --project demo-boda \"vitest run rules-tests/firestore.rules.test.ts\"",
     "preview": "vite preview",
     "tunnel": "npm run build && vite preview --host 0.0.0.0 --port 5173"
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^5.0.2",
+    "@playwright/test": "^1.64.0",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

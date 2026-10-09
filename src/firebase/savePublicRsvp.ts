@@ -5,8 +5,13 @@ import { parseInvitation } from './validateInvitation';
 import type { AttendanceResponse } from '../page/HomePage/sections/rsvpLogic';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const useFirebaseEmulators = import.meta.env.VITE_USE_FIREBASE_EMULATORS === 'true';
 
 if (!API_BASE_URL) throw new Error('Falta la variable VITE_API_BASE_URL.');
+
+if (useFirebaseEmulators && !/^https?:\/\/(localhost|127\.0\.0\.1):3000\/?$/.test(API_BASE_URL)) {
+	throw new Error('En modo emulador, VITE_API_BASE_URL debe apuntar a localhost:3000.');
+}
 
 export class RsvpConflictError extends Error {}
 export class RsvpUnavailableError extends Error {}
